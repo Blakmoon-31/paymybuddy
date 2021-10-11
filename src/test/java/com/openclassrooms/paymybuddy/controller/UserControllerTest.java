@@ -1,5 +1,6 @@
 package com.openclassrooms.paymybuddy.controller;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Optional;
@@ -59,11 +60,12 @@ public class UserControllerTest {
 		Optional<User> userFound = userController.getUserByEmail("test.test@test.com");
 		User userToDelete = userFound.get();
 
-		userController.deleteUser(userToDelete);
+		String response = userController.deleteUser(userToDelete);
 
 		Optional<User> userDeleted = userController.getUserById(userToDelete.getUserId());
 
 		assertTrue(userDeleted.isEmpty());
+		assertThat(response).isEqualTo("User deleted");
 	}
 
 	@Test
@@ -72,10 +74,11 @@ public class UserControllerTest {
 		Optional<User> userFound = userController.getUserById(5);
 		User userToTryToDelete = userFound.get();
 
-		userController.deleteUser(userToTryToDelete);
+		String response = userController.deleteUser(userToTryToDelete);
 
 		Optional<User> userStillPresent = userController.getUserById(5);
 
 		assertTrue(userStillPresent.isPresent());
+		assertThat(response).isEqualTo("User not deleted : there are transactions for this user");
 	}
 }

@@ -13,6 +13,8 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.DynamicUpdate;
 
+import com.openclassrooms.paymybuddy.dto.UserDto;
+
 import lombok.Data;
 
 @Data
@@ -40,11 +42,11 @@ public class Transaction {
 
 	@ManyToOne
 	@JoinColumn(name = "tra_sender_user_id", nullable = false)
-	private User senderUser;
+	private UserDto senderUserDto;
 
 	@ManyToOne
 	@JoinColumn(name = "tra_recipient_user_id", nullable = false)
-	private User recipientUser;
+	private UserDto recipientUserDto;
 
 	@ManyToOne
 	@JoinColumn(name = "tra_fee_rate_fee_id", nullable = false)

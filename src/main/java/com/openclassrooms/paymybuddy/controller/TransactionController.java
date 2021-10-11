@@ -1,8 +1,11 @@
 package com.openclassrooms.paymybuddy.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import com.openclassrooms.paymybuddy.dto.UserDto;
 import com.openclassrooms.paymybuddy.model.Transaction;
 import com.openclassrooms.paymybuddy.model.User;
 import com.openclassrooms.paymybuddy.service.TransactionService;
@@ -21,12 +24,14 @@ public class TransactionController {
 
 		Transaction transactionSaved = transactionService.saveTransaction(transaction);
 
-		User senderUser = transactionSaved.getSenderUser();
+		UserDto senderUserDto = transactionSaved.getSenderUserDto();
+		User senderUser = userService.getUserById(senderUserDto.getUserId()).get();
 		senderUser.setBalance(senderUser.getBalance() - transactionSaved.getAmount());
 
 		userService.saveUser(senderUser);
 
-		User recipientUser = transactionSaved.getRecipientUser();
+		UserDto recipientUserDto = transactionSaved.getRecipientUserDto();
+		User recipientUser = userService.getUserById(recipientUserDto.getUserId()).get();
 		recipientUser.setBalance(recipientUser.getBalance() + transactionSaved.getAmount());
 
 		userService.saveUser(recipientUser);
@@ -36,11 +41,15 @@ public class TransactionController {
 		// TODO : gérer versements depuis/vers compte personnel, user/user ?
 	}
 
-	public Iterable<Transaction> getTransactionBySenderUser(User user) {
-		return transactionService.getTransactionBySenderUser(user);
+	public Iterable<Transaction> getTransactionsBySenderUserDto(UserDto userDto) {
+		return transactionService.getTransactionBySenderUserDto(userDto);
 	}
 
-	public Iterable<Transaction> getTransactionByRecipientUser(User user) {
-		return transactionService.getTransactionByRecipientUser(user);
+	public Iterable<Transaction> getTransactionsByRecipientUserDto(UserDto userDto) {
+		return transactionService.getTransactionByRecipientUserDto(userDto);
+	}
+
+	public List<Transaction> getTransactionsNotBilledForASenderUserDto(UserDto senderUserDto, boolean billed) {
+		return transactionService.getTransactionsNotBilledForASenderUserDto(senderUserDto, billed);
 	}
 }

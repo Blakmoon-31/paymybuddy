@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.AfterAll;
@@ -17,10 +18,12 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.openclassrooms.paymybuddy.dto.UserDto;
 import com.openclassrooms.paymybuddy.model.Transaction;
 import com.openclassrooms.paymybuddy.model.User;
 import com.openclassrooms.paymybuddy.repository.TransactionRepository;
 import com.openclassrooms.paymybuddy.service.FeeService;
+import com.openclassrooms.paymybuddy.service.MapUserDtoService;
 
 @SpringBootTest
 @TestMethodOrder(OrderAnnotation.class)
@@ -31,10 +34,13 @@ public class TransactionControllerTest {
 	private TransactionController transactionController;
 
 	@Autowired
-	private TransactionRepository transactionRpository;
+	private TransactionRepository transactionRepository;
 
 	@Autowired
 	private UserController userController;
+
+	@Autowired
+	private MapUserDtoService mapUserDtoService;
 
 	@Autowired
 	private FeeService feeService;
@@ -44,15 +50,16 @@ public class TransactionControllerTest {
 	public void testSaveTransaction() {
 		Transaction newTransaction = new Transaction();
 
-		Optional<User> userSender = userController.getUserById(4);
-		Optional<User> userRecipient = userController.getUserById(2);
+		UserDto userDtoSender = mapUserDtoService.convertUserToUserDto(userController.getUserById(4).get());
+		UserDto userDtoRecipient = mapUserDtoService.convertUserToUserDto(userController.getUserById(2).get());
 
-		newTransaction.setSenderUser(userSender.get());
-		newTransaction.setRecipientUser(userRecipient.get());
+		newTransaction.setSenderUserDto(userDtoSender);
+		newTransaction.setRecipientUserDto(userDtoRecipient);
 		newTransaction.setAmount(999.88);
 		newTransaction.setDate(LocalDateTime.now());
 		newTransaction.setDescription("Test de création");
 		newTransaction.setFee(feeService.getFeeForTransactionDate(LocalDate.now()));
+		newTransaction.setBilled(true);
 
 		newTransaction = transactionController.saveTransaction(newTransaction);
 
@@ -68,24 +75,35 @@ public class TransactionControllerTest {
 
 	@Test
 	@Order(2)
-	public void testGetTransactionBySenderUser() {
-		Optional<User> sender = userController.getUserById(5);
-		Iterable<Transaction> transactionsList = transactionController.getTransactionBySenderUser(sender.get());
+	public void testGetTransactionsBySenderUserDto() {
+		UserDto senderDto = mapUserDtoService.convertUserToUserDto(userController.getUserById(5).get());
+		Iterable<Transaction> transactionsList = transactionController.getTransactionsBySenderUserDto(senderDto);
 
 		assertTrue(transactionsList.iterator().hasNext());
 	}
 
 	@Test
 	@Order(3)
-	public void testGetTransactionByRecipientUser() {
-		Optional<User> recipient = userController.getUserById(3);
-		Iterable<Transaction> transactionsList = transactionController.getTransactionByRecipientUser(recipient.get());
+	public void testGetTransactionsByRecipientUserDto() {
+		UserDto recipientDto = mapUserDtoService.convertUserToUserDto(userController.getUserById(3).get());
+		Iterable<Transaction> transactionsList = transactionController.getTransactionsByRecipientUserDto(recipientDto);
 
 		assertTrue(transactionsList.iterator().hasNext());
 	}
 
+	@Test
+	@Order(4)
+	public void testGetTransactionsNotBilledForASenderUserDto() {
+		UserDto userDtoSender = mapUserDtoService.convertUserToUserDto(userController.getUserById(5).get());
+		boolean billed = false;
+		List<Transaction> transactionsNotBilled = transactionController
+				.getTransactionsNotBilledForASenderUserDto(userDtoSender, billed);
+
+		assertThat(transactionsNotBilled.size()).isEqualTo(3);
+	}
+
 	@AfterAll
-	public void resetData() {
+	public void resetTransactionData() {
 
 		User userSender = userController.getUserById(4).get();
 		userSender.setBalance(0.00);
@@ -95,9 +113,11 @@ public class TransactionControllerTest {
 		userRecipient.setBalance(0.00);
 		userController.saveUser(userRecipient);
 
-		Iterable<Transaction> transactionsToDelete = transactionController.getTransactionBySenderUser(userSender);
+		UserDto userDtoSender = mapUserDtoService.convertUserToUserDto(userSender);
+		Iterable<Transaction> transactionsToDelete = transactionController
+				.getTransactionsBySenderUserDto(userDtoSender);
 
-		transactionRpository.deleteAll(transactionsToDelete);
+		transactionRepository.deleteAll(transactionsToDelete);
 
 	}
 

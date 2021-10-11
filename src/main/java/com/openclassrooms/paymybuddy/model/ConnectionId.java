@@ -2,18 +2,20 @@ package com.openclassrooms.paymybuddy.model;
 
 import java.io.Serializable;
 
-import javax.persistence.Embeddable;
-
 import lombok.Data;
 
 @Data
-@Embeddable
+//@Embeddable
 public class ConnectionId implements Serializable {
 
 //	private int conUserUserId;
+//
+//	private int userId;
+//
+//	private int connectedId;
 
-	private int userId;
+	private int userConnection;
 
-	private int connectionId;
+	private int connectedUser;
 
 }

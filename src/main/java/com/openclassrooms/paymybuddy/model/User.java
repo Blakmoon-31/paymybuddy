@@ -48,7 +48,7 @@ public class User {
 //	@JoinTable(name = "connection", joinColumns = @JoinColumn(name = "con_user_user_id"), inverseJoinColumns = @JoinColumn(name = "con_connection_user_id"))
 //	private List<User> connections;
 
-	@OneToMany(mappedBy = "UserConnection")
+	@OneToMany(mappedBy = "userConnection")
 	private List<Connection> connections = new ArrayList<>();
 
 }

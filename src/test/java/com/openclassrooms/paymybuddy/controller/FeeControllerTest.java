@@ -3,11 +3,15 @@ package com.openclassrooms.paymybuddy.controller;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.Optional;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,6 +20,7 @@ import com.openclassrooms.paymybuddy.model.Fee;
 
 @SpringBootTest
 @TestMethodOrder(OrderAnnotation.class)
+@TestInstance(Lifecycle.PER_CLASS)
 public class FeeControllerTest {
 
 	@Autowired
@@ -68,6 +73,18 @@ public class FeeControllerTest {
 		Optional<Fee> feeDeleted = feeController.getFeeById(feeToDelete.getId());
 
 		assertTrue(feeDeleted.isEmpty());
+	}
+
+	@AfterAll
+	public void resetFeeData() {
+		Collection<Fee> feesList = feeController.getFees();
+//		LocalDate dateToFind = LocalDate.now().minusDays(1);
+		for (Fee f : feesList) {
+			if (f.getEndDate().equals(LocalDate.now().minusDays(1))) {
+				f.setEndDate(null);
+				feeController.saveFee(f);
+			}
+		}
 	}
 
 }

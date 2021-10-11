@@ -5,15 +5,18 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import com.openclassrooms.paymybuddy.dto.UserDto;
 import com.openclassrooms.paymybuddy.model.Transaction;
-import com.openclassrooms.paymybuddy.model.User;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Integer> {
 
-	List<Transaction> findBySenderUser(User senderUser);
+	List<Transaction> findBySenderUserDto(UserDto senderUserDto);
 
-	List<Transaction> findByRecipientUser(User recipientUser);
+	List<Transaction> findByRecipientUserDto(UserDto recipientUserDto);
 
-	void deleteBySenderUser(User userSender);
+	void deleteBySenderUserDto(UserDto senderUserDto);
+
+	List<Transaction> findAllBySenderUserDtoAndBilled(UserDto senderUserDto, boolean billed);
+
 }
