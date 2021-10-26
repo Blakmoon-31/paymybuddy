@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,14 +41,29 @@ public class UserService {
 		return userRepository.findByEmail(email);
 	}
 
+	@Transactional
 	public User saveUser(User user) {
-		return userRepository.save(user);
+
+		// If the user has an id, it's an update, else it's a creation so control of the
+		// email (unique constraint)
+		if (user.getUserId() >= 1) {
+			return userRepository.save(user);
+		} else {
+			Optional<User> existsEmail = userRepository.findByEmail(user.getEmail());
+			if (existsEmail.isEmpty()) {
+				return userRepository.save(user);
+			} else {
+				return null;
+			}
+		}
+
 	}
 
+	@Transactional
 	public String deleteByUser(User user) {
 
 		boolean userDeleted = false;
-		UserDto userDto = mapUserDtoService.convertUserToUserDto(user);
+		UserDto userDto = mapUserDtoService.getUserDtoById(user.getUserId()).get();
 
 		List<Transaction> transactionsAsSenderFound = transactionService.getTransactionBySenderUserDto(userDto);
 
@@ -60,6 +77,7 @@ public class UserService {
 
 				// If no too, delete user
 				connectionService.deleteConnectionsByUserConnection(user);
+				connectionService.deleteConnectionsByConnectedUser(user);
 				userRepository.delete(user);
 				userDeleted = true;
 			}

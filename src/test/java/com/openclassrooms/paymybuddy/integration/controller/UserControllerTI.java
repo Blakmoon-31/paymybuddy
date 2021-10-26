@@ -1,28 +1,50 @@
-package com.openclassrooms.paymybuddy.controller;
+package com.openclassrooms.paymybuddy.integration.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Optional;
 
-import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
-import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.openclassrooms.paymybuddy.controller.UserController;
 import com.openclassrooms.paymybuddy.model.User;
 
 @SpringBootTest
-@TestMethodOrder(OrderAnnotation.class)
-public class UserControllerTest {
+@TestInstance(Lifecycle.PER_CLASS)
+public class UserControllerTI {
 
 	@Autowired
 	private UserController userController;
 
+	@BeforeAll
+	public void initUserData() {
+		User userForTest = new User();
+
+		userForTest.setEmail("martel.charles@test.com");
+		userForTest.setFirstName("Charles");
+		userForTest.setLastName("Martel");
+		userForTest.setPassword("toto");
+
+		userController.saveUser(userForTest);
+	}
+
+	@AfterAll
+	public void resetUserData() {
+		Optional<User> userFound = userController.getUserByEmail("test.test@test.com");
+		User userToReset = userFound.get();
+
+		userController.deleteUser(userToReset);
+
+	}
+
 	@Test
-	@Order(1)
 	public void testSaveUser() {
 		User userToSave = new User();
 
@@ -38,7 +60,6 @@ public class UserControllerTest {
 	}
 
 	@Test
-	@Order(2)
 	public void testGetUsers() {
 		Iterable<User> usersList = userController.getUsers();
 
@@ -47,7 +68,6 @@ public class UserControllerTest {
 	}
 
 	@Test
-	@Order(3)
 	public void testGetUserById() {
 		Optional<User> userFound = userController.getUserById(1);
 
@@ -55,9 +75,8 @@ public class UserControllerTest {
 	}
 
 	@Test
-	@Order(4)
 	public void testDeleteUserWithoutTransaction() {
-		Optional<User> userFound = userController.getUserByEmail("test.test@test.com");
+		Optional<User> userFound = userController.getUserByEmail("martel.charles@test.com");
 		User userToDelete = userFound.get();
 
 		String response = userController.deleteUser(userToDelete);
@@ -69,7 +88,6 @@ public class UserControllerTest {
 	}
 
 	@Test
-	@Order(5)
 	public void testDeleteUserWithTransactionWontDelete() {
 		Optional<User> userFound = userController.getUserById(5);
 		User userToTryToDelete = userFound.get();

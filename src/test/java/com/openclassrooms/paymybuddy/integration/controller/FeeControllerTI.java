@@ -1,4 +1,4 @@
-package com.openclassrooms.paymybuddy.controller;
+package com.openclassrooms.paymybuddy.integration.controller;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -7,27 +7,54 @@ import java.util.Collection;
 import java.util.Optional;
 
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
-import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.openclassrooms.paymybuddy.controller.FeeController;
 import com.openclassrooms.paymybuddy.model.Fee;
+import com.openclassrooms.paymybuddy.repository.FeeRepository;
 
 @SpringBootTest
-@TestMethodOrder(OrderAnnotation.class)
 @TestInstance(Lifecycle.PER_CLASS)
-public class FeeControllerTest {
+public class FeeControllerTI {
 
 	@Autowired
 	private FeeController feeController;
 
+	@Autowired
+	private FeeRepository feeRepository;
+
+	@BeforeAll
+	public void initFeeData() {
+		Fee feeToInit = new Fee();
+
+		feeToInit.setRatePercentage(0.6);
+		feeToInit.setStartDate(LocalDate.of(2021, 01, 01));
+
+		feeToInit = feeController.saveFee(feeToInit);
+	}
+
+	@AfterAll
+	public void resetFeeData() {
+		Collection<Fee> feesList = feeController.getFees();
+		for (Fee f : feesList) {
+			if (f.getRatePercentage() == 0.5) {
+				f.setEndDate(null);
+				feeRepository.save(f);
+			} else {
+				if (f.getRatePercentage() == 9.99) {
+					feeRepository.delete(f);
+				}
+			}
+
+		}
+	}
+
 	@Test
-	@Order(1)
 	public void testSaveFee() {
 		Fee newFee = new Fee();
 
@@ -41,7 +68,6 @@ public class FeeControllerTest {
 	}
 
 	@Test
-	@Order(2)
 	public void testGetFees() {
 		Iterable<Fee> feesList = feeController.getFees();
 
@@ -49,7 +75,6 @@ public class FeeControllerTest {
 	}
 
 	@Test
-	@Order(3)
 	public void testGetFeeById() {
 		Optional<Fee> fee = feeController.getFeeById(2);
 
@@ -57,13 +82,12 @@ public class FeeControllerTest {
 	}
 
 	@Test
-	@Order(4)
 	public void testDeleteByFee() {
 		Iterable<Fee> feesList = feeController.getFees();
 		Fee feeToDelete = new Fee();
 
 		for (Fee f : feesList) {
-			if (f.getRatePercentage() == 9.99) {
+			if (f.getRatePercentage() == 0.6) {
 				feeToDelete = f;
 			}
 		}
@@ -73,18 +97,6 @@ public class FeeControllerTest {
 		Optional<Fee> feeDeleted = feeController.getFeeById(feeToDelete.getId());
 
 		assertTrue(feeDeleted.isEmpty());
-	}
-
-	@AfterAll
-	public void resetFeeData() {
-		Collection<Fee> feesList = feeController.getFees();
-//		LocalDate dateToFind = LocalDate.now().minusDays(1);
-		for (Fee f : feesList) {
-			if (f.getEndDate().equals(LocalDate.now().minusDays(1))) {
-				f.setEndDate(null);
-				feeController.saveFee(f);
-			}
-		}
 	}
 
 }

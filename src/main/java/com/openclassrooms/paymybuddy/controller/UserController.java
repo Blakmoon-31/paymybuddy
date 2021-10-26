@@ -4,23 +4,22 @@ import java.util.Collection;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import com.openclassrooms.paymybuddy.model.User;
 import com.openclassrooms.paymybuddy.service.UserService;
 
-@RestController
+@Controller
 public class UserController {
 
 	@Autowired
 	private UserService userService;
 
-//	@GetMapping("/users")
 	public Collection<User> getUsers() {
 		return userService.getUsers();
 	}
 
-//	@GetMapping("/user/{userId}")
 	public Optional<User> getUserById(int userId) {
 		return userService.getUserById(userId);
 	}
@@ -29,8 +28,17 @@ public class UserController {
 		return userService.getUserByEmail(string);
 	}
 
+	@PostMapping("/adduser")
 	public User saveUser(User userToSave) {
-		return userService.saveUser(userToSave);
+
+		User userSaved = userService.saveUser(userToSave);
+
+		if (userSaved == null)
+			// throw new PayMyBuddyException("The email '" + userToSave.getEmail() + "'
+			// already exists.");
+			return null;
+
+		return userSaved;
 	}
 
 	public String deleteUser(User user) {

@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.88.1">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <!-- Bootstrap core CSS -->
+    <link href="../static/css/bootstrap.min.css" th:href="@{./css/bootstrap.min.css}" rel="stylesheet">
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+
+    
+    <!-- Custom styles for this template -->
+    <link href="../static/css/headers.css" th:href="@{./css/headers.css}" rel="stylesheet">
+
+    <title>Pay My Buddy - Profil</title>
+  </head>
+
+  <body>
+    <main>
+      <div class="container">
+        <div class="row">
+          <header class="col d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+            <a id="paymybuddy" href="transfer" class="d-flex bg-success align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+              <span class="fs-4 px-3 text-white">Pay My Buddy</span>
+            </a>
+
+            <ul class="nav nav-pills">
+              <li class="nav-item"><a href="transfer" class="nav-link">Home</a></li>
+              <li class="nav-item"><a href="transfer" class="nav-link">Transfer</a></li>
+              <!-- <li class="nav-item"><a href="./profil.html" class="nav-link">Profil</a></li> -->
+              <li class="nav-item"><p class="nav-link active" aria-current="page">Profil</p></li>
+              <li class="nav-item"><a href="#" class="nav-link">Contact</a></li>
+              <li class="nav-item"><a href="login" class="nav-link">Log off</a></li>
+            </ul>
+          </header>
+        </div>
+      </div>
+      <div class="container bg-light">
+        <div class="row">
+          <header class="d-flex py-3">
+            <ul class="nav nav-pills">
+              <li class="nav-item"><a href="transfer" class="nav-link">Home</a></li>
+              <li class="nav-item"><p class="nav-link">/</p></li>
+              <li class="nav-item"><a href="transfer" class="nav-link">Transfer</a></li>
+            </ul>
+          </header>
+        </div>
+      </div>
+
+      <section>
+        <div class="container">
+          <div class="row d-flex justify-content-center align-items-center">
+            <div class="col">
+              <div class="card text-black border-white" style="border-radius: 25px;">
+                <div class="card-body p-md-5">
+                  <div class="row">
+                    <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
+                      <form class="mx-1 mx-md-4">
+
+                        <div class="d-flex flex-row align-items-center mb-4 form-group">
+                          <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+                          <div class="form-outline flex-fill mb-0">
+                            <label class="form-label" for="user_first_name">First Name</label>
+                            <input type="text" id="user_first_name" class="form-control" required/>
+                          </div>
+                        </div>
+
+                        <div class="d-flex flex-row align-items-center mb-4 form-group">
+                          <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+                          <div class="form-outline flex-fill mb-0">
+                            <label class="form-label" for="user_last_name">Last Name</label>
+                            <input type="text" id="user_last_name" class="form-control" required/>
+                          </div>
+                        </div>
+
+                        <div class="d-flex flex-row align-items-center mb-4 form-group">
+                          <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
+                          <div class="form-outline flex-fill mb-0">
+                            <label class="form-label" for="user_email">Email</label>
+                            <input type="email" id="user_email" class="form-control" required/>
+                          </div>
+                        </div>
+
+                        <div class="d-flex flex-row align-items-center mb-4 form-group">
+                          <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+                          <div class="form-outline flex-fill mb-0">
+                            <label class="form-label" for="user_bank_account">Bank Account</label>
+                            <input type="text" id="user_bank_account" class="form-control" required/>
+                          </div>
+                        </div>
+
+                        <div class="d-flex flex-row align-items-center mb-4 form-group">
+                          <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
+                          <div class="form-outline flex-fill mb-0">
+                            <label class="form-label" for="user_password">Password</label>
+                            <input type="password" id="user_password" class="form-control" required/>
+                          </div>
+                        </div>
+<!-- comment contrôler vérification ?
+                        <div class="d-flex flex-row align-items-center mb-4 form-group">
+                          <i class="fas fa-key fa-lg me-3 fa-fw"></i>
+                          <div class="form-outline flex-fill mb-0">
+                            <label class="form-label" for="user_password_repeate">Repeat your password</label>
+                            <input type="password" id="user_password_repeate" class="form-control" required/>
+                          </div>
+                        </div>
+-->
+                        <div class="d-flex justify-content-around mx-4 mb-3 mb-lg-4">
+                          <button type="submit" class="btn btn-success btn-lg">Update</button>
+                          <button type="reset" class="btn btn-primary btn-lg">Cancel</button>
+                        </div>
+                      </form>
+
+                    </div>
+                    <div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center flex-wrap order-1 order-lg-2">
+                      <div class="d-flex flex-row align-items-center mb-4 form-group">
+                        <div class="form-outline flex-fill mb-0">
+                          <label class="form-label" for="user_last_name">Balance</label>
+                          <input type="text" id="user_last_name" class="form-control" />
+                        </div>
+                      </div>
+                      <table>
+                        <caption>My Connections</caption>
+
+                        <tr>
+                          <th>Name</th>
+                          <th>Email</th>
+                          <th>Full name</th>
+                          <th>Delete</th>
+                        </tr>
+                        <tr class="bg-light">
+                          <td>Hayley</td>
+                          <td>hayley@mail.com</td>
+                          <td>Hayley Doe</td>
+                          <td>X</td>
+                        </tr>
+                        <tr>
+                          <td>Clara</td>
+                          <td>clara.doe@mail.com</td>
+                          <td>Clara Doe</td>
+                          <td>X</td>
+                        </tr>
+                        <tr class="bg-light">
+                          <td>Smith</td>
+                          <td>john.smith@mail.com</td>
+                          <td>John Smith</td>
+                          <td>X</td>
+                        </tr>
+                      </table>
+                      <button class="btn btn-primary btn-lg">Add Connection</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  </body>
+</html>

@@ -1,10 +1,12 @@
 package com.openclassrooms.paymybuddy.controller;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import com.openclassrooms.paymybuddy.dto.UserDto;
 import com.openclassrooms.paymybuddy.model.Connection;
 import com.openclassrooms.paymybuddy.model.User;
 import com.openclassrooms.paymybuddy.service.ConnectionService;
@@ -15,14 +17,16 @@ public class ConnectionController {
 	@Autowired
 	private ConnectionService connectionService;
 
-//	@GetMapping("/connections/{userId}")
 	public Collection<Connection> getConnectionsByUserId(int userId) {
 		return connectionService.getUserConnectionsByUserid(userId);
 	}
 
-//	@GetMapping("/connections")
 	public Collection<Connection> getConnections() {
 		return connectionService.getConnections();
+	}
+
+	public Optional<UserDto> searchByEmail(String email) {
+		return connectionService.searchByEmail(email);
 	}
 
 	public Connection saveConnection(Connection connection) {

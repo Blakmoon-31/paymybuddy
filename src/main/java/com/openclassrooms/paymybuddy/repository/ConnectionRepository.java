@@ -17,4 +17,7 @@ public interface ConnectionRepository extends JpaRepository<Connection, Connecti
 	@Transactional
 	void deleteAllByUserConnection(UserDto userDto);
 
+	@Transactional
+	void deleteAllByConnectedUser(UserDto userDto);
+
 }
