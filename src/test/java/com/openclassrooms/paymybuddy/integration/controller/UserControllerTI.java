@@ -53,9 +53,9 @@ public class UserControllerTI {
 		userToSave.setLastName("Test");
 		userToSave.setPassword("toto");
 
-		userToSave = userController.saveUser(userToSave);
+		String result = userController.saveUser(userToSave);
 
-		assertTrue(userToSave.getUserId() > 0);
+		assertTrue(result.equals("login"));
 
 	}
 

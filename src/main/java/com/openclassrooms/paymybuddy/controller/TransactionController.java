@@ -15,21 +15,21 @@ public class TransactionController {
 	@Autowired
 	private TransactionService transactionService;
 
-	public Transaction saveTransaction(Transaction transaction) {
-		return transactionService.saveTransaction(transaction);
-
-		// TODO : gérer versements depuis/vers compte personnel, user/user ?
-	}
-
-	public Iterable<Transaction> getTransactionsBySenderUserDto(UserDto userDto) {
-		return transactionService.getTransactionBySenderUserDto(userDto);
+	public List<Transaction> getTransactionsBySenderUserDto(UserDto userDto) {
+		return transactionService.getTransactionsBySenderUserDto(userDto);
 	}
 
 	public Iterable<Transaction> getTransactionsByRecipientUserDto(UserDto userDto) {
-		return transactionService.getTransactionByRecipientUserDto(userDto);
+		return transactionService.getTransactionsByRecipientUserDto(userDto);
 	}
 
 	public List<Transaction> getTransactionsForASenderUserDtoAndBilled(UserDto senderUserDto, boolean billed) {
 		return transactionService.getTransactionsForASenderUserDtoAndBilled(senderUserDto, billed);
+	}
+
+	public Transaction saveTransaction(Transaction transaction) {
+		return transactionService.saveTransaction(transaction);
+
+		// TODO : gérer versements depuis/vers compte personnel, user/user ?
 	}
 }

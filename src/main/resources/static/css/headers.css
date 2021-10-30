@@ -67,14 +67,23 @@ td{
   align-items: center;
 
 }
-#recipient, #description, #amount{
+#findConnection{
+  height: 50px; 
+  margin: auto;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-around;
+  align-items: center;
+
+}
+#recipient, #description, #amount, #email, #name, #fullName{
   height: 30px;
   border-radius: 5px;
 }
 .buddy_amount:after{
   content: '€';
 }
-#pay{
+#pay, #search, #add{
   height: 30px;
   width: 75px;
   border-radius: 5px;

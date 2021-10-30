@@ -1,4 +1,4 @@
-package com.openclassrooms.paymybuddy.repository;
+package com.openclassrooms.paymybuddy.dtorepository;
 
 import java.util.Optional;
 

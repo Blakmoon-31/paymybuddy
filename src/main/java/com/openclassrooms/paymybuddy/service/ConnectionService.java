@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.openclassrooms.paymybuddy.dto.UserDto;
+import com.openclassrooms.paymybuddy.dtoservice.MapUserDtoService;
 import com.openclassrooms.paymybuddy.model.Connection;
 import com.openclassrooms.paymybuddy.model.ConnectionId;
 import com.openclassrooms.paymybuddy.model.User;
@@ -23,7 +24,7 @@ public class ConnectionService {
 	@Autowired
 	private ConnectionRepository connectionRepository;
 
-	public Collection<Connection> getUserConnectionsByUserid(int userId) {
+	public Collection<Connection> getUserConnectionsByUserId(int userId) {
 		UserDto userDto = mapUserDtoService.getUserDtoById(userId).get();
 		Collection<Connection> connectionsList = connectionRepository.findByUserConnection(userDto);
 		return connectionsList;

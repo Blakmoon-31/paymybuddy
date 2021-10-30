@@ -4,8 +4,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-    <meta name="generator" content="Hugo 0.88.1">
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
@@ -47,7 +45,6 @@
             <ul class="nav nav-pills">
               <li class="nav-item"><a href="transfer" class="nav-link">Home</a></li>
               <li class="nav-item"><a href="transfer" class="nav-link">Transfer</a></li>
-              <!-- <li class="nav-item"><a href="./profil.html" class="nav-link">Profil</a></li> -->
               <li class="nav-item"><p class="nav-link active" aria-current="page">Profil</p></li>
               <li class="nav-item"><a href="#" class="nav-link">Contact</a></li>
               <li class="nav-item"><a href="login" class="nav-link">Log off</a></li>
@@ -75,45 +72,45 @@
                 <div class="card-body p-md-5">
                   <div class="row">
                     <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
-                      <form class="mx-1 mx-md-4">
+                      <form th:action="@{profil}" th:object="${user}" method="put" class="mx-1 mx-md-4">
 
                         <div class="d-flex flex-row align-items-center mb-4 form-group">
                           <i class="fas fa-user fa-lg me-3 fa-fw"></i>
                           <div class="form-outline flex-fill mb-0">
-                            <label class="form-label" for="user_first_name">First Name</label>
-                            <input type="text" id="user_first_name" class="form-control" required/>
+                            <label class="form-label" for="firstName">First Name</label>
+                            <input type="text" id="firstName" class="form-control" required th:value="${user.firstName}" th:field="*{firstName}" />
                           </div>
                         </div>
 
                         <div class="d-flex flex-row align-items-center mb-4 form-group">
                           <i class="fas fa-user fa-lg me-3 fa-fw"></i>
                           <div class="form-outline flex-fill mb-0">
-                            <label class="form-label" for="user_last_name">Last Name</label>
-                            <input type="text" id="user_last_name" class="form-control" required/>
+                            <label class="form-label" for="lastName">Last Name</label>
+                            <input type="text" id="lastName" class="form-control" required th:value="${user.lastName}"th:field="*{lastName}" />
                           </div>
                         </div>
 
                         <div class="d-flex flex-row align-items-center mb-4 form-group">
                           <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
                           <div class="form-outline flex-fill mb-0">
-                            <label class="form-label" for="user_email">Email</label>
-                            <input type="email" id="user_email" class="form-control" required/>
+                            <label class="form-label" for="email">Email</label>
+                            <input type="email" id="email" class="form-control" required th:value="${user.email}"th:field="*{email}" />
                           </div>
                         </div>
 
                         <div class="d-flex flex-row align-items-center mb-4 form-group">
                           <i class="fas fa-user fa-lg me-3 fa-fw"></i>
                           <div class="form-outline flex-fill mb-0">
-                            <label class="form-label" for="user_bank_account">Bank Account</label>
-                            <input type="text" id="user_bank_account" class="form-control" required/>
+                            <label class="form-label" for="bankAccount">Bank Account</label>
+                            <input type="text" id="bankAccount" class="form-control" required th:value="${user.bankAccount}"th:field="*{bankAccount}" />
                           </div>
                         </div>
 
                         <div class="d-flex flex-row align-items-center mb-4 form-group">
                           <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
                           <div class="form-outline flex-fill mb-0">
-                            <label class="form-label" for="user_password">Password</label>
-                            <input type="password" id="user_password" class="form-control" required/>
+                            <label class="form-label" for="password">Password</label>
+                            <input type="password" id="password" class="form-control" required th:value="${user.password}" th:field="*{password}" />
                           </div>
                         </div>
 <!-- comment contrôler vérification ?
@@ -135,8 +132,8 @@
                     <div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center flex-wrap order-1 order-lg-2">
                       <div class="d-flex flex-row align-items-center mb-4 form-group">
                         <div class="form-outline flex-fill mb-0">
-                          <label class="form-label" for="user_last_name">Balance</label>
-                          <input type="text" id="user_last_name" class="form-control" />
+                          <label class="form-label" for="balance">Balance</label>
+                          <input type="text" id="balance" class="form-control"  th:value="${#numbers.formatDecimal(user.balance,1,2)}" />
                         </div>
                       </div>
                       <table>
@@ -148,26 +145,18 @@
                           <th>Full name</th>
                           <th>Delete</th>
                         </tr>
-                        <tr class="bg-light">
-                          <td>Hayley</td>
-                          <td>hayley@mail.com</td>
-                          <td>Hayley Doe</td>
-                          <td>X</td>
-                        </tr>
-                        <tr>
-                          <td>Clara</td>
-                          <td>clara.doe@mail.com</td>
-                          <td>Clara Doe</td>
-                          <td>X</td>
-                        </tr>
-                        <tr class="bg-light">
-                          <td>Smith</td>
-                          <td>john.smith@mail.com</td>
-                          <td>John Smith</td>
-                          <td>X</td>
+                        <tr th:each="connection: ${connectionsList}" th:class="${connectionStat.odd}? 'bg-light'">
+                          <td th:text="${connection.connectionName}" />
+                          <td th:text="${connection.connectedUserEmail}" />
+                          <td th:text="${connection.connectedUserFullName}" />
+                          <td>
+                            <form th:action="@{deleteConnection/{id}(id=${connection.connectedUserId})}" th:object="${user}" method="delete">
+                              <button type="submit" onClick="return confirm('Are sure you want to delete this connection ?')" class="bg-danger text-white font-weight-bold">X</button>
+                            </form>
+                          </td>
                         </tr>
                       </table>
-                      <button class="btn btn-primary btn-lg">Add Connection</button>
+                      <a class=" btn btn-primary" href="connection"><span class="font-weight-bold">Add Connection</span></a>
                     </div>
                   </div>
                 </div>

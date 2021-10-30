@@ -40,11 +40,11 @@ public class TransactionService {
 		return transactionRepository.findById(id);
 	}
 
-	public List<Transaction> getTransactionBySenderUserDto(UserDto senderUserDto) {
+	public List<Transaction> getTransactionsBySenderUserDto(UserDto senderUserDto) {
 		return transactionRepository.findBySenderUserDto(senderUserDto);
 	}
 
-	public List<Transaction> getTransactionByRecipientUserDto(UserDto recipientUserDto) {
+	public List<Transaction> getTransactionsByRecipientUserDto(UserDto recipientUserDto) {
 		return transactionRepository.findByRecipientUserDto(recipientUserDto);
 	}
 

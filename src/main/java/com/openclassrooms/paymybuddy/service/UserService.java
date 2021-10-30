@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.openclassrooms.paymybuddy.dto.UserDto;
+import com.openclassrooms.paymybuddy.dtoservice.MapUserDtoService;
 import com.openclassrooms.paymybuddy.model.Transaction;
 import com.openclassrooms.paymybuddy.model.User;
 import com.openclassrooms.paymybuddy.repository.UserRepository;
@@ -65,12 +66,12 @@ public class UserService {
 		boolean userDeleted = false;
 		UserDto userDto = mapUserDtoService.getUserDtoById(user.getUserId()).get();
 
-		List<Transaction> transactionsAsSenderFound = transactionService.getTransactionBySenderUserDto(userDto);
+		List<Transaction> transactionsAsSenderFound = transactionService.getTransactionsBySenderUserDto(userDto);
 
 		// Verify if user has made a transaction
 		if (transactionsAsSenderFound.size() == 0) {
 			List<Transaction> transactionsAsRecipientFound = transactionService
-					.getTransactionByRecipientUserDto(userDto);
+					.getTransactionsByRecipientUserDto(userDto);
 
 			// If no, verify if user has received a transaction
 			if (transactionsAsRecipientFound.size() == 0) {
@@ -89,6 +90,10 @@ public class UserService {
 			return "User not deleted : there are transactions for this user";
 		}
 
+	}
+
+	public Double getBalanceByUserId(int userId) {
+		return userRepository.findBalanceByUserId(userId);
 	}
 
 }

@@ -16,9 +16,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.openclassrooms.paymybuddy.controller.ConnectionController;
 import com.openclassrooms.paymybuddy.dto.UserDto;
+import com.openclassrooms.paymybuddy.dtoservice.MapUserDtoService;
 import com.openclassrooms.paymybuddy.model.Connection;
 import com.openclassrooms.paymybuddy.model.User;
-import com.openclassrooms.paymybuddy.service.MapUserDtoService;
 import com.openclassrooms.paymybuddy.service.UserService;
 
 @SpringBootTest

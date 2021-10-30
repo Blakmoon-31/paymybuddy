@@ -18,11 +18,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.openclassrooms.paymybuddy.controller.TransactionController;
 import com.openclassrooms.paymybuddy.controller.UserController;
 import com.openclassrooms.paymybuddy.dto.UserDto;
+import com.openclassrooms.paymybuddy.dtoservice.MapUserDtoService;
 import com.openclassrooms.paymybuddy.model.Transaction;
 import com.openclassrooms.paymybuddy.model.User;
 import com.openclassrooms.paymybuddy.repository.TransactionRepository;
 import com.openclassrooms.paymybuddy.service.FeeService;
-import com.openclassrooms.paymybuddy.service.MapUserDtoService;
 
 @SpringBootTest
 @TestInstance(Lifecycle.PER_CLASS)

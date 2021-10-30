@@ -1,6 +1,6 @@
 package com.openclassrooms.paymybuddy.unit.controller;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -52,6 +52,7 @@ public class UserControllerTest {
 		userToTest.setLastName("Doe");
 		userToTest.setEmail("user@test.com");
 
-		assertNull(userController.saveUser(userToTest));
+		String result = userController.saveUser(userToTest);
+		assertThat(result.equals("register"));
 	}
 }
