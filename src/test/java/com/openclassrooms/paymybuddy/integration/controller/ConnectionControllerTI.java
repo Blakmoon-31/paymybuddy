@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collection;
 
+import javax.servlet.http.HttpSession;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -13,12 +15,15 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.ui.Model;
 
 import com.openclassrooms.paymybuddy.controller.ConnectionController;
+import com.openclassrooms.paymybuddy.dto.ConnectionDto;
 import com.openclassrooms.paymybuddy.dto.UserDto;
 import com.openclassrooms.paymybuddy.dtoservice.MapUserDtoService;
 import com.openclassrooms.paymybuddy.model.Connection;
 import com.openclassrooms.paymybuddy.model.User;
+import com.openclassrooms.paymybuddy.service.ConnectionService;
 import com.openclassrooms.paymybuddy.service.UserService;
 
 @SpringBootTest
@@ -29,10 +34,16 @@ public class ConnectionControllerTI {
 	private ConnectionController connectionController;
 
 	@Autowired
+	private ConnectionService connectionService;
+
+	@Autowired
 	private UserService userService;
 
 	@Autowired
 	private MapUserDtoService mapUserDtoService;
+
+	@Autowired
+	private HttpSession httpSession;
 
 	@BeforeAll
 	public void initConnectionData() {
@@ -44,7 +55,7 @@ public class ConnectionControllerTI {
 		connectionToInit.setConnectedUser(userDtoConnected);
 		connectionToInit.setNameConnectionUser("Test2");
 
-		connectionController.saveConnection(connectionToInit);
+		connectionService.saveConnection(connectionToInit);
 
 		userDtoconnection = mapUserDtoService.getUserDtoById(1).get();
 		userDtoConnected = mapUserDtoService.getUserDtoById(7).get();
@@ -53,7 +64,7 @@ public class ConnectionControllerTI {
 		connectionToInit.setConnectedUser(userDtoConnected);
 		connectionToInit.setNameConnectionUser("Test3");
 
-		connectionController.saveConnection(connectionToInit);
+		connectionService.saveConnection(connectionToInit);
 
 		userDtoconnection = mapUserDtoService.getUserDtoById(7).get();
 		userDtoConnected = mapUserDtoService.getUserDtoById(1).get();
@@ -62,7 +73,7 @@ public class ConnectionControllerTI {
 		connectionToInit.setConnectedUser(userDtoConnected);
 		connectionToInit.setNameConnectionUser("Test4");
 
-		connectionController.saveConnection(connectionToInit);
+		connectionService.saveConnection(connectionToInit);
 
 	}
 
@@ -75,17 +86,17 @@ public class ConnectionControllerTI {
 
 	@Test
 	public void testSaveConnection() {
-		Connection connectionToSave = new Connection();
-		UserDto userDtoconnection = mapUserDtoService.getUserDtoById(7).get();
-		UserDto userDtoConnected = mapUserDtoService.getUserDtoById(6).get();
+		ConnectionDto connectionDtoToSave = new ConnectionDto();
+		connectionDtoToSave.setUserId(7);
+		connectionDtoToSave.setConnectionName("Test");
+		connectionDtoToSave.setConnectedUserEmail("jean.bon@mail.com");
 
-		connectionToSave.setUserConnection(userDtoconnection);
-		connectionToSave.setConnectedUser(userDtoConnected);
-		connectionToSave.setNameConnectionUser("Test");
+		Model model = null;
+		httpSession.setAttribute("userId", 7);
 
-		Connection connectionSaved = connectionController.saveConnection(connectionToSave);
+		String response = connectionController.saveConnection(connectionDtoToSave, model, httpSession);
 
-		assertThat(connectionSaved.getNameConnectionUser()).isEqualTo("Test");
+		assertThat(response.equals("Test"));
 
 	}
 
@@ -105,7 +116,9 @@ public class ConnectionControllerTI {
 
 	@Test
 	public void testDeleteConnectionByUserIdAndConnectedUserId() {
-		connectionController.deleteConnectionByUserIdAndConnectedUserId(7, 5);
+		httpSession.setAttribute("userId", 7);
+
+		connectionController.deleteConnectionByUserIdAndConnectedUserId(httpSession, 5);
 		Collection<Connection> connectionsList = connectionController.getConnectionsByUserId(7);
 		assertThat(connectionsList.size()).isEqualTo(1);
 	}

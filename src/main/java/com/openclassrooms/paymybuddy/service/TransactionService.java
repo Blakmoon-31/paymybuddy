@@ -1,5 +1,6 @@
 package com.openclassrooms.paymybuddy.service;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -9,8 +10,9 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.openclassrooms.paymybuddy.dto.TransactionDto;
 import com.openclassrooms.paymybuddy.dto.UserDto;
-import com.openclassrooms.paymybuddy.exceptions.PayMyBuddyException;
+import com.openclassrooms.paymybuddy.dtoservice.MapUserDtoService;
 import com.openclassrooms.paymybuddy.model.Fee;
 import com.openclassrooms.paymybuddy.model.Transaction;
 import com.openclassrooms.paymybuddy.model.User;
@@ -27,6 +29,9 @@ public class TransactionService {
 
 	@Autowired
 	private FeeService feeService;
+
+	@Autowired
+	private MapUserDtoService mapUserDtoService;
 
 	public Collection<Transaction> getTransactions() {
 		return transactionRepository.findAll();
@@ -49,36 +54,45 @@ public class TransactionService {
 	}
 
 	@Transactional
-	public Transaction saveTransaction(Transaction transaction) {
-		User userSender = userService.getUserById(transaction.getSenderUserDto().getUserId()).get();
+	public String saveTransaction(TransactionDto transactionDto, int userId) {
 
-		// Transaction amount can't be < 0
-		if (transaction.getAmount() <= 0) {
-			throw new PayMyBuddyException("The amount must by positive.");
+		User userSender = userService.getUserById(userId).get();
 
-			// User balance can't be < of transaction amount
-		} else if (userSender.getBalance() < transaction.getAmount()) {
-			throw new PayMyBuddyException("The user's balance is insufficient.");
+		// Transaction amount can't be <= 0
+		if (transactionDto.getAmount() <= 0) {
+			return "Amount";
 
-			// If all is, proceed : calculate new balances for both sender and recipient and
-			// assign the fee for the transaction date
+			// Sender user balance can't be < of transaction amount
+		} else if (userSender.getBalance() < transactionDto.getAmount()) {
+			return "Balance";
+
+			// If all is ok, proceed : save the transaction and calculate new balances for
+			// both sender and recipient users
 		} else {
+			Transaction transactionToSave = new Transaction();
 
-			transaction.setFee(feeService.getFeeForTransactionDate(transaction.getDate().toLocalDate()));
+			UserDto senderUserDto = mapUserDtoService.getUserDtoById(userSender.getUserId()).get();
+			UserDto recipientUserDto = mapUserDtoService.getUserDtoByEmail(transactionDto.getRecipientUserEmail())
+					.get();
 
-			UserDto senderUserDto = transaction.getSenderUserDto();
-			User senderUser = userService.getUserById(senderUserDto.getUserId()).get();
-			senderUser.setBalance(senderUser.getBalance() - transaction.getAmount());
+			transactionToSave.setSenderUserDto(senderUserDto);
+			transactionToSave.setRecipientUserDto(recipientUserDto);
 
-			userService.saveUser(senderUser);
+			transactionToSave.setDate(LocalDateTime.now());
+			transactionToSave.setAmount(transactionDto.getAmount());
+			transactionToSave.setDescription(transactionDto.getDescription());
+			transactionToSave.setFee(feeService.getFeeForTransactionDate(transactionToSave.getDate().toLocalDate()));
+			transactionRepository.save(transactionToSave);
 
-			UserDto recipientUserDto = transaction.getRecipientUserDto();
+			// Modify balances of sender and recipient users
+			userSender.setBalance(userSender.getBalance() - transactionToSave.getAmount());
+			userService.saveUser(userSender);
+
 			User recipientUser = userService.getUserById(recipientUserDto.getUserId()).get();
-			recipientUser.setBalance(recipientUser.getBalance() + transaction.getAmount());
-
+			recipientUser.setBalance(recipientUser.getBalance() + transactionToSave.getAmount());
 			userService.saveUser(recipientUser);
 
-			return transactionRepository.save(transaction);
+			return "Transfer saved";
 		}
 
 	}

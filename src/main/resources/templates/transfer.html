@@ -73,15 +73,18 @@
           </div>
         </div>
         <div class="row">
-          <form method="post" action="" class="col-10 mx-auto bg-light">
+          <form method="post" th:action="@{transfer}" th:object="${transactionDto}" class="col-10 mx-auto bg-light">
             <div id="send_money">
-              <select id="recipient" name="tra_recipient_user_id" th:field="*{connectionsList}" required class="col-4">
+              <select id="recipient" name="recipient" th:field="*{recipientUserEmail}" required class="col-4">
                 <option value="" selected>--Select A Connection--</option>
-                <option th:each="i : ${connectionsList}" th:value="${i.connectionName}" th:text="${i.connectionName}"></option>
+                <option th:each="i : ${connectionsList}" th:value="${i.connectedUserEmail}" th:text="${i.connectionName}"></option>
               </select>
-              <input id="description" type="text" name="description" placeholder="Description" required maxlength="100" class="col-4">
-              <input id="amount" type="number" name="amount" required placeholder="0€" step="0.01" class="col-2">
+              <input id="description" type="text" name="description" th:field="*{description}" placeholder="Description" required maxlength="100" class="col-4">
+              <input id="amount" type="number" name="amount" th:field="*{amount}" required placeholder="0€" step="0.01" class="col-2">
               <input id="pay" type="submit" value="Pay" class="bg-success text-white font-weight-bold col-3">
+            </div>
+            <div th:if="${errorTransfer != null}">
+              <p th:text="${errorTransfer}" class="font-weight-bold text-danger"></p>
             </div>
           </form>
         </div>

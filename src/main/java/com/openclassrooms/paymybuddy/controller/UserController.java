@@ -57,8 +57,26 @@ public class UserController {
 	@PutMapping("/profil")
 	public String updateUserProfil(User userToUpdate, BindingResult result, Model model, HttpSession httpSession) {
 		userToUpdate.setUserId((int) httpSession.getAttribute("userId"));
+		User existsUser = userService.getUserById(userToUpdate.getUserId()).get();
+		userToUpdate.setPassword(existsUser.getPassword());
 		userService.saveUser(userToUpdate);
-		return "profil";
+		return "redirect:profil";
+	}
+
+	@PutMapping("profil/updatePwd")
+	public String updatePassword(User userToUpdate, BindingResult result, Model model, HttpSession httpSession) {
+		User userNew = userService.getUserById((int) httpSession.getAttribute("userId")).get();
+		userNew.setPassword(userToUpdate.getPassword());
+		userService.saveUser(userNew);
+		return "redirect:/profil";
+	}
+
+	@PutMapping("balance")
+	public String updateBalance(User userToUpdate, BindingResult result, Model model, HttpSession httpSession) {
+		User userNew = userService.getUserById((int) httpSession.getAttribute("userId")).get();
+		userNew.setBalance(userToUpdate.getBalance());
+		userService.saveUser(userNew);
+		return "redirect:/profil";
 	}
 
 	public String deleteUser(User user) {

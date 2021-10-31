@@ -76,7 +76,11 @@ td{
   align-items: center;
 
 }
-#recipient, #description, #amount, #email, #name, #fullName{
+#recipient, #description, #amount{
+  height: 30px;
+  border-radius: 5px;
+}
+#email, #name, #fullName{
   height: 30px;
   border-radius: 5px;
 }

@@ -72,8 +72,7 @@
                 <div class="card-body p-md-5">
                   <div class="row">
                     <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
-                      <form th:action="@{profil}" th:object="${user}" method="put" class="mx-1 mx-md-4">
-
+                      <form th:action="@{profil}" th:object="${user}" th:method="put" class="mx-1 mx-md-4">
                         <div class="d-flex flex-row align-items-center mb-4 form-group">
                           <i class="fas fa-user fa-lg me-3 fa-fw"></i>
                           <div class="form-outline flex-fill mb-0">
@@ -81,7 +80,6 @@
                             <input type="text" id="firstName" class="form-control" required th:value="${user.firstName}" th:field="*{firstName}" />
                           </div>
                         </div>
-
                         <div class="d-flex flex-row align-items-center mb-4 form-group">
                           <i class="fas fa-user fa-lg me-3 fa-fw"></i>
                           <div class="form-outline flex-fill mb-0">
@@ -89,7 +87,6 @@
                             <input type="text" id="lastName" class="form-control" required th:value="${user.lastName}"th:field="*{lastName}" />
                           </div>
                         </div>
-
                         <div class="d-flex flex-row align-items-center mb-4 form-group">
                           <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
                           <div class="form-outline flex-fill mb-0">
@@ -97,7 +94,6 @@
                             <input type="email" id="email" class="form-control" required th:value="${user.email}"th:field="*{email}" />
                           </div>
                         </div>
-
                         <div class="d-flex flex-row align-items-center mb-4 form-group">
                           <i class="fas fa-user fa-lg me-3 fa-fw"></i>
                           <div class="form-outline flex-fill mb-0">
@@ -105,37 +101,46 @@
                             <input type="text" id="bankAccount" class="form-control" required th:value="${user.bankAccount}"th:field="*{bankAccount}" />
                           </div>
                         </div>
-
+                        <div class="d-flex justify-content-around mx-4 mb-3 mb-lg-4">
+                          <button type="submit" class="btn btn-success btn-lg">Update Profil</button>
+                          <button type="reset" class="btn btn-primary btn-lg">Cancel</button>
+                        </div>
+                        <input hidden type="text" th:value="${user.balance}" th:field="*{balance}" />
+                      </form>
+                      <form th:action="@{balance}" th:object="${user}" th:method="put" class="mx-1 mx-md-4">
                         <div class="d-flex flex-row align-items-center mb-4 form-group">
                           <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
                           <div class="form-outline flex-fill mb-0">
-                            <label class="form-label" for="password">Password</label>
-                            <input type="password" id="password" class="form-control" required th:value="${user.password}" th:field="*{password}" />
+                            <label class="form-label" for="balance">Balance</label>
+                            <input type="text" id="balance" class="form-control"  th:value="${#numbers.formatDecimal(user.balance,1,2)}" th:field="*{balance}" />
                           </div>
-                        </div>
-<!-- comment contrôler vérification ?
-                        <div class="d-flex flex-row align-items-center mb-4 form-group">
-                          <i class="fas fa-key fa-lg me-3 fa-fw"></i>
-                          <div class="form-outline flex-fill mb-0">
-                            <label class="form-label" for="user_password_repeate">Repeat your password</label>
-                            <input type="password" id="user_password_repeate" class="form-control" required/>
-                          </div>
-                        </div>
--->
+                        </div>                        
                         <div class="d-flex justify-content-around mx-4 mb-3 mb-lg-4">
-                          <button type="submit" class="btn btn-success btn-lg">Update</button>
-                          <button type="reset" class="btn btn-primary btn-lg">Cancel</button>
+                          <button type="submit" class="btn btn-success btn-lg">Update balance</button>
+                        </div>
+                      </form>
+                    </div>
+                    <div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center flex-wrap order-1 order-lg-2">
+                      <form th:action="@{profil/updatePwd}" th:object="${user}" th:method="put"
+                          oninput='passwordConfirm.setCustomValidity(passwordConfirm.value != password.value ? "Passwords do not match." : "")'
+                      >
+                        <div class="d-flex flex-row align-items-center mb-4 form-group">
+                          <div class="form-outline flex-fill mb-0">
+                            <label class="form-label" for="password">Password</label>
+                            <input type="password" id="password" class="form-control" required th:field="*{password}" />
+                          </div>
+                        </div>
+                        <div class="d-flex flex-row align-items-center mb-4 form-group">
+                          <div class="form-outline flex-fill mb-0">
+                            <label class="form-label" for="passwordConfirm">Repeat your password</label>
+                            <input type="password" id="passwordConfirm" class="form-control" required/>
+                          </div>
+                        </div>
+                        <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
+                          <button type="submit" class="btn btn-primary btn-lg">Change password</button>
                         </div>
                       </form>
 
-                    </div>
-                    <div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center flex-wrap order-1 order-lg-2">
-                      <div class="d-flex flex-row align-items-center mb-4 form-group">
-                        <div class="form-outline flex-fill mb-0">
-                          <label class="form-label" for="balance">Balance</label>
-                          <input type="text" id="balance" class="form-control"  th:value="${#numbers.formatDecimal(user.balance,1,2)}" />
-                        </div>
-                      </div>
                       <table>
                         <caption>My Connections</caption>
 
@@ -143,20 +148,14 @@
                           <th>Name</th>
                           <th>Email</th>
                           <th>Full name</th>
-                          <th>Delete</th>
                         </tr>
                         <tr th:each="connection: ${connectionsList}" th:class="${connectionStat.odd}? 'bg-light'">
                           <td th:text="${connection.connectionName}" />
                           <td th:text="${connection.connectedUserEmail}" />
                           <td th:text="${connection.connectedUserFullName}" />
-                          <td>
-                            <form th:action="@{deleteConnection/{id}(id=${connection.connectedUserId})}" th:object="${user}" method="delete">
-                              <button type="submit" onClick="return confirm('Are sure you want to delete this connection ?')" class="bg-danger text-white font-weight-bold">X</button>
-                            </form>
-                          </td>
                         </tr>
                       </table>
-                      <a class=" btn btn-primary" href="connection"><span class="font-weight-bold">Add Connection</span></a>
+                      <a class=" btn btn-primary" href="connection"><span class="font-weight-bold">Manage Connections</span></a>
                     </div>
                   </div>
                 </div>

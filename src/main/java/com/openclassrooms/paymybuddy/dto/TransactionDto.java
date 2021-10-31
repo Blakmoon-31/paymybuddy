@@ -40,4 +40,7 @@ public class TransactionDto {
 	@Transient
 	private String recipientConnectionName;
 
+	@Transient
+	private String recipientUserEmail;
+
 }

@@ -3,10 +3,10 @@ package com.openclassrooms.paymybuddy.integration.controller;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+
+import javax.servlet.http.HttpSession;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
@@ -14,15 +14,17 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 
 import com.openclassrooms.paymybuddy.controller.TransactionController;
 import com.openclassrooms.paymybuddy.controller.UserController;
+import com.openclassrooms.paymybuddy.dto.TransactionDto;
 import com.openclassrooms.paymybuddy.dto.UserDto;
 import com.openclassrooms.paymybuddy.dtoservice.MapUserDtoService;
 import com.openclassrooms.paymybuddy.model.Transaction;
 import com.openclassrooms.paymybuddy.model.User;
 import com.openclassrooms.paymybuddy.repository.TransactionRepository;
-import com.openclassrooms.paymybuddy.service.FeeService;
 
 @SpringBootTest
 @TestInstance(Lifecycle.PER_CLASS)
@@ -41,18 +43,21 @@ public class TransactionControllerTI {
 	private MapUserDtoService mapUserDtoService;
 
 	@Autowired
-	private FeeService feeService;
+	private HttpSession httpSession;
 
 	@AfterAll
 	public void resetTransactionData() {
 
+		Model model = null;
+		BindingResult bindingResult = null;
+
 		User userSender = userController.getUserById(4).get();
 		userSender.setBalance(999.88);
-		userController.saveUser(userSender);
+		userController.saveUser(userSender, bindingResult, model);
 
 		User userRecipient = userController.getUserById(2).get();
 		userRecipient.setBalance(0.00);
-		userController.saveUser(userRecipient);
+		userController.saveUser(userRecipient, bindingResult, model);
 
 		UserDto userDtoSender = mapUserDtoService.getUserDtoById(userSender.getUserId()).get();
 		Iterable<Transaction> transactionsToDelete = transactionController
@@ -64,25 +69,23 @@ public class TransactionControllerTI {
 
 	@Test
 	public void testSaveTransaction() {
-		Transaction newTransaction = new Transaction();
+		Model model;
+		BindingResult bindingResult = null;
+		httpSession.setAttribute("userId", 4);
 
-		UserDto userDtoSender = mapUserDtoService.getUserDtoById(4).get();
-		UserDto userDtoRecipient = mapUserDtoService.getUserDtoById(2).get();
+		TransactionDto newTransactionDto = new TransactionDto();
 
-		newTransaction.setSenderUserDto(userDtoSender);
-		newTransaction.setRecipientUserDto(userDtoRecipient);
-		newTransaction.setAmount(999.88);
-		newTransaction.setDate(LocalDateTime.now());
-		newTransaction.setDescription("Test de création");
-		newTransaction.setFee(feeService.getFeeForTransactionDate(LocalDate.now()));
-		newTransaction.setBilled(true);
+		newTransactionDto.setSenderUserId(4);
+		newTransactionDto.setRecipientUserId(2);
+		newTransactionDto.setRecipientUserEmail("clara.dupont@mail.fr");
 
-		newTransaction = transactionController.saveTransaction(newTransaction);
+		newTransactionDto.setAmount(999.88);
+		newTransactionDto.setDescription("Test de création");
+
+		transactionController.saveTransaction(newTransactionDto, bindingResult, model, httpSession);
 
 		Optional<User> userSenderAfter = userController.getUserById(4);
 		Optional<User> userRecipientAfter = userController.getUserById(2);
-
-		assertTrue(newTransaction.getId() > 0);
 
 		assertThat(userSenderAfter.get().getBalance()).isEqualTo(0);
 		assertThat(userRecipientAfter.get().getBalance()).isEqualTo(999.88);

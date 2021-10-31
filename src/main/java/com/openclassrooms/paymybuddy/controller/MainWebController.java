@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.openclassrooms.paymybuddy.dto.ConnectionDto;
+import com.openclassrooms.paymybuddy.dto.TransactionDto;
 import com.openclassrooms.paymybuddy.dto.UserDto;
 import com.openclassrooms.paymybuddy.dtoservice.MapConnectionDtoService;
 import com.openclassrooms.paymybuddy.dtoservice.MapTransactionDtoService;
@@ -87,14 +88,13 @@ public class MainWebController {
 			return "login";
 		} else {
 			int userId = (int) httpSession.getAttribute("userId");
-			Optional<UserDto> userDto = mapUserDtoService.getUserDtoById(userId);
-			model.addAttribute("transactionsList",
-					mapTransactionDtoService.getTransactionsDtoBySenderId(userDto.get().getUserId()));
-
+			model.addAttribute("transactionsList", mapTransactionDtoService.getTransactionsDtoBySenderId(userId));
 			model.addAttribute("connectionsList", mapConnectionDtoService.getConnectionsDtoByUserId(userId));
 
-			Optional<User> user = userService.getUserById(userId);
-			model.addAttribute("user", user.get());
+			User user = userService.getUserById(userId).get();
+			model.addAttribute("user", user);
+			TransactionDto newTransaction = new TransactionDto();
+			model.addAttribute("transactionDto", newTransaction);
 			return "transfer";
 		}
 	}
@@ -108,6 +108,7 @@ public class MainWebController {
 			int userId = (int) httpSession.getAttribute("userId");
 			model.addAttribute("user", userService.getUserById(userId).get());
 			model.addAttribute("connectionsList", mapConnectionDtoService.getConnectionsDtoByUserId(userId));
+
 			return "profil";
 		}
 	}
@@ -116,7 +117,12 @@ public class MainWebController {
 	public String showAddConnectionPage(Model model, HttpSession httpSession) {
 		Collection<ConnectionDto> connectionsList = mapConnectionDtoService
 				.getConnectionsDtoByUserId((int) httpSession.getAttribute("userId"));
+		ConnectionDto connectionDtoNew = new ConnectionDto();
+
+		model.addAttribute("connectionDto", connectionDtoNew);
 		model.addAttribute("connectionsList", connectionsList);
+
 		return "connection";
 	}
+
 }

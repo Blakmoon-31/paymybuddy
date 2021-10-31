@@ -2,18 +2,37 @@ package com.openclassrooms.paymybuddy.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.PostMapping;
 
+import com.openclassrooms.paymybuddy.dto.TransactionDto;
 import com.openclassrooms.paymybuddy.dto.UserDto;
+import com.openclassrooms.paymybuddy.dtoservice.MapConnectionDtoService;
+import com.openclassrooms.paymybuddy.dtoservice.MapTransactionDtoService;
 import com.openclassrooms.paymybuddy.model.Transaction;
+import com.openclassrooms.paymybuddy.model.User;
 import com.openclassrooms.paymybuddy.service.TransactionService;
+import com.openclassrooms.paymybuddy.service.UserService;
 
 @Controller
 public class TransactionController {
 
 	@Autowired
 	private TransactionService transactionService;
+
+	@Autowired
+	private UserService userService;
+
+	@Autowired
+	private MapTransactionDtoService mapTransactionDtoService;
+
+	@Autowired
+	private MapConnectionDtoService mapConnectionDtoService;
 
 	public List<Transaction> getTransactionsBySenderUserDto(UserDto userDto) {
 		return transactionService.getTransactionsBySenderUserDto(userDto);
@@ -27,9 +46,28 @@ public class TransactionController {
 		return transactionService.getTransactionsForASenderUserDtoAndBilled(senderUserDto, billed);
 	}
 
-	public Transaction saveTransaction(Transaction transaction) {
-		return transactionService.saveTransaction(transaction);
+	@PostMapping("transfer")
+	public String saveTransaction(TransactionDto transactionDto, BindingResult result, Model model,
+			HttpSession httpSession) {
+		int userId = (int) httpSession.getAttribute("userId");
 
-		// TODO : gérer versements depuis/vers compte personnel, user/user ?
+		String response = transactionService.saveTransaction(transactionDto, userId);
+
+		if (response == "Amount") {
+			model.addAttribute("errorTransfer", "The amount must be > 0");
+		} else if (response == "Balance") {
+			model.addAttribute("errorTransfer", "Your balance is insufficient for this amount");
+		}
+
+		model.addAttribute("transactionsList", mapTransactionDtoService.getTransactionsDtoBySenderId(userId));
+		model.addAttribute("connectionsList", mapConnectionDtoService.getConnectionsDtoByUserId(userId));
+
+		User user = userService.getUserById(userId).get();
+		model.addAttribute("user", user);
+		TransactionDto newTransaction = new TransactionDto();
+		model.addAttribute("transactionDto", newTransaction);
+
+		return "transfer";
+
 	}
 }

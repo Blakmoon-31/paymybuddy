@@ -12,6 +12,8 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 
 import com.openclassrooms.paymybuddy.controller.UserController;
 import com.openclassrooms.paymybuddy.model.User;
@@ -46,6 +48,9 @@ public class UserControllerTI {
 
 	@Test
 	public void testSaveUser() {
+		BindingResult bindingResult;
+		Model model;
+
 		User userToSave = new User();
 
 		userToSave.setEmail("test.test@test.com");
@@ -53,7 +58,7 @@ public class UserControllerTI {
 		userToSave.setLastName("Test");
 		userToSave.setPassword("toto");
 
-		String result = userController.saveUser(userToSave);
+		String result = userController.saveUser(userToSave, bindingResult, model);
 
 		assertTrue(result.equals("login"));
 

@@ -68,19 +68,19 @@
       <div class="container">
         <div class="row">
           <div class="col-10 mx-auto">
-            <caption>Search For Someone By Email</caption>
+            <caption>Add A Connection By Email</caption>
           </div>
         </div>
         <div class="row">
-          <form method="post" action="traitement.php" class="col-10 mx-auto bg-light">
+          <form th:action="@{connection}" th:object="${connectionDto}" method="post" class="col-10 mx-auto bg-light">
             <div id="findConnection">
-              <form method="get" action="traitement.php">
-                <input id="email" type="text" name="connectionEmail" placeholder="Enter an email to search" required maxlength="255" class="col-3">
-                <input id="search" type="submit" value="Search" class="bg-primary text-white col-3">
-              </form>
-              <input id="name" type="text" name="name" placeholder="Name" required maxlength="45" class="col-3">
-              <input id="fullName" type="text" name="fullName" placeholder="Full name" class="col-3" disabled>
+              <input id="email" type="text" name="connectionEmail" th:field="*{connectedUserEmail}" placeholder="Email" required maxlength="255" class="col-3">
+              <input id="name" type="text" name="name" placeholder="Name" th:field="*{connectionName}" maxlength="45" class="col-3">
+              <!-- <input id="fullName" type="text" name="fullName" placeholder="Full name" th:value="${resultFullName}" class="col-3" disabled> -->
               <input id="add" type="submit" value="Add" class="bg-success text-white col-3">
+              <div th:if="${errorEmail != null}">
+                <p th:text="${errorEmail}" class="font-weight-bold text-danger"></p>
+              </div>
             </div>
           </form>
         </div>
@@ -96,12 +96,18 @@
                 <th>Name</th>
                 <th>Full Name</th>
                 <th>Email</th>
+                <th>Delete</th>
               </tr>
-                <tr th:each="connection: ${connectionsList}" th:class="${connectionStat.odd}? 'bg-light'">
-                  <td th:text="${connection.connectionName}" />
-                  <td th:text="${connection.connectedUserEmail}" />
-                  <td th:text="${connection.connectedUserFullName}" />
-                </tr>
+              <tr th:each="connection: ${connectionsList}" th:class="${connectionStat.odd}? 'bg-light'">
+                <td th:text="${connection.connectionName}" />
+                <td th:text="${connection.connectedUserFullName}" />
+                <td th:text="${connection.connectedUserEmail}" />
+                <td>
+                  <form th:action="@{deleteConnection/{id}(id=${connection.connectedUserId})}" th:object="${user}" th:method="delete">
+                    <button type="submit" onClick="return confirm('Are sure you want to delete this connection ?')" class="bg-danger text-white font-weight-bold">X</button>
+                  </form>
+                </td>
+              </tr>
             </table>
           </div>
         </div>
