@@ -2,6 +2,7 @@ package com.openclassrooms.paymybuddy.integration.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
 
 import java.util.Optional;
 
@@ -17,6 +18,7 @@ import org.springframework.validation.BindingResult;
 
 import com.openclassrooms.paymybuddy.controller.UserController;
 import com.openclassrooms.paymybuddy.model.User;
+import com.openclassrooms.paymybuddy.service.UserService;
 
 @SpringBootTest
 @TestInstance(Lifecycle.PER_CLASS)
@@ -24,6 +26,9 @@ public class UserControllerTI {
 
 	@Autowired
 	private UserController userController;
+
+	@Autowired
+	private UserService userService;
 
 	@BeforeAll
 	public void initUserData() {
@@ -34,7 +39,7 @@ public class UserControllerTI {
 		userForTest.setLastName("Martel");
 		userForTest.setPassword("toto");
 
-		userController.saveUser(userForTest);
+		userService.saveUser(userForTest);
 	}
 
 	@AfterAll
@@ -48,8 +53,8 @@ public class UserControllerTI {
 
 	@Test
 	public void testSaveUser() {
-		BindingResult bindingResult;
-		Model model;
+		BindingResult result = mock(BindingResult.class);
+		Model model = mock(Model.class);
 
 		User userToSave = new User();
 
@@ -58,9 +63,9 @@ public class UserControllerTI {
 		userToSave.setLastName("Test");
 		userToSave.setPassword("toto");
 
-		String result = userController.saveUser(userToSave, bindingResult, model);
+		String response = userController.saveUser(userToSave, result, model);
 
-		assertTrue(result.equals("login"));
+		assertThat(response).isEqualTo("redirect:login");
 
 	}
 

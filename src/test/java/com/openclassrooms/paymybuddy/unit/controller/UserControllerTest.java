@@ -2,6 +2,7 @@ package com.openclassrooms.paymybuddy.unit.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
@@ -13,6 +14,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 
 import com.openclassrooms.paymybuddy.controller.UserController;
 import com.openclassrooms.paymybuddy.model.User;
@@ -45,6 +48,8 @@ public class UserControllerTest {
 
 	@Test
 	public void testSaveUserEmailExists() {
+		BindingResult result = mock(BindingResult.class);
+		Model model = mock(Model.class);
 
 		User userToTest = new User();
 		userToTest.setUserId(99);
@@ -52,7 +57,7 @@ public class UserControllerTest {
 		userToTest.setLastName("Doe");
 		userToTest.setEmail("user@test.com");
 
-		String result = userController.saveUser(userToTest);
-		assertThat(result.equals("register"));
+		String response = userController.saveUser(userToTest, result, model);
+		assertThat(response.equals("register"));
 	}
 }

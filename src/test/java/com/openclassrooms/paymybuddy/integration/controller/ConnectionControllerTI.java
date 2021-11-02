@@ -3,6 +3,7 @@ package com.openclassrooms.paymybuddy.integration.controller;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
 
 import java.util.Collection;
 
@@ -91,7 +92,7 @@ public class ConnectionControllerTI {
 		connectionDtoToSave.setConnectionName("Test");
 		connectionDtoToSave.setConnectedUserEmail("jean.bon@mail.com");
 
-		Model model = null;
+		Model model = mock(Model.class);
 		httpSession.setAttribute("userId", 7);
 
 		String response = connectionController.saveConnection(connectionDtoToSave, model, httpSession);

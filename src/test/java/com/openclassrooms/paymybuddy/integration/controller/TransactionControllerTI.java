@@ -2,6 +2,7 @@ package com.openclassrooms.paymybuddy.integration.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
 
 import java.util.List;
 import java.util.Optional;
@@ -48,16 +49,16 @@ public class TransactionControllerTI {
 	@AfterAll
 	public void resetTransactionData() {
 
-		Model model = null;
-		BindingResult bindingResult = null;
+		BindingResult result = mock(BindingResult.class);
+		Model model = mock(Model.class);
 
 		User userSender = userController.getUserById(4).get();
 		userSender.setBalance(999.88);
-		userController.saveUser(userSender, bindingResult, model);
+		userController.saveUser(userSender, result, model);
 
 		User userRecipient = userController.getUserById(2).get();
 		userRecipient.setBalance(0.00);
-		userController.saveUser(userRecipient, bindingResult, model);
+		userController.saveUser(userRecipient, result, model);
 
 		UserDto userDtoSender = mapUserDtoService.getUserDtoById(userSender.getUserId()).get();
 		Iterable<Transaction> transactionsToDelete = transactionController
@@ -69,8 +70,8 @@ public class TransactionControllerTI {
 
 	@Test
 	public void testSaveTransaction() {
-		Model model;
-		BindingResult bindingResult = null;
+		BindingResult result = mock(BindingResult.class);
+		Model model = mock(Model.class);
 		httpSession.setAttribute("userId", 4);
 
 		TransactionDto newTransactionDto = new TransactionDto();
@@ -82,7 +83,7 @@ public class TransactionControllerTI {
 		newTransactionDto.setAmount(999.88);
 		newTransactionDto.setDescription("Test de création");
 
-		transactionController.saveTransaction(newTransactionDto, bindingResult, model, httpSession);
+		transactionController.saveTransaction(newTransactionDto, result, model, httpSession);
 
 		Optional<User> userSenderAfter = userController.getUserById(4);
 		Optional<User> userRecipientAfter = userController.getUserById(2);
