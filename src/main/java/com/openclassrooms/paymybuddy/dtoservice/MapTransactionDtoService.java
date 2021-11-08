@@ -48,4 +48,28 @@ public class MapTransactionDtoService {
 		return transactionsList;
 	}
 
+	public List<TransactionDto> getTransactionsDtoByRecipientId(int recipientId) {
+
+		List<TransactionDto> transactionsList = mapTransactionDtoRepository.findByRecipientUserId(recipientId);
+		Collection<Connection> connectionsList = connectionService.getUserConnectionsByUserId(recipientId);
+
+		for (TransactionDto transaction : transactionsList) {
+			int senderId = transaction.getSenderUserId();
+			// First set name in transactionDto with full name in case the sender is no
+			// more in connections list
+			UserDto senderDto = mapUserDtoService.getUserDtoById(senderId).get();
+			transaction.setRecipientConnectionName(senderDto.getFirstName() + " " + senderDto.getLastName());
+
+			for (Connection connection : connectionsList) {
+
+				if (senderId == connection.getConnectedUser().getUserId()) {
+					transaction.setRecipientConnectionName(connection.getNameConnectionUser());
+					transaction.setRecipientUserEmail(connection.getConnectedUser().getEmail());
+				}
+			}
+		}
+
+		return transactionsList;
+	}
+
 }

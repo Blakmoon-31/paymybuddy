@@ -19,18 +19,13 @@ import lombok.Data;
 @Table(name = "connection")
 public class Connection {
 
-//	@EmbeddedId
-//	private ConnectionId connectionId;
-
 	@ManyToOne(fetch = FetchType.EAGER)
 	@Id
-//	@MapsId("userId")
 	@JoinColumn(name = "con_user_user_id", nullable = false)
 	private UserDto userConnection;
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@Id
-//	@MapsId("connectedId")
 	@JoinColumn(name = "con_connection_user_id", nullable = false)
 	private UserDto connectedUser;
 

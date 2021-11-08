@@ -13,7 +13,6 @@ import lombok.Data;
 
 @Data
 @Entity
-//@DynamicUpdate
 @Table(name = "fee")
 public class Fee {
 

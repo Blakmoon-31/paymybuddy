@@ -38,16 +38,16 @@
       <div class="container">
         <div class="row">
           <header class="col d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
-            <a id="paymybuddy" href="transfer" class="d-flex bg-success align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+            <a id="paymybuddy" href="/transfer" class="d-flex bg-success align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
               <span class="fs-4 px-3 text-white">Pay My Buddy</span>
             </a>
 
             <ul class="nav nav-pills">
-              <li class="nav-item"><a href="transfer" class="nav-link">Home</a></li>
-              <li class="nav-item"><a href="transfer" class="nav-link">Transfer</a></li>
+              <li class="nav-item"><a href="/transfer" class="nav-link">Home</a></li>
+              <li class="nav-item"><a href="/transfer" class="nav-link">Transfer</a></li>
               <li class="nav-item"><p class="nav-link active" aria-current="page">Profil</p></li>
               <li class="nav-item"><a href="#" class="nav-link">Contact</a></li>
-              <li class="nav-item"><a href="login" class="nav-link">Log off</a></li>
+              <li class="nav-item"><a href="/logoff" class="nav-link">Log off</a></li>
             </ul>
           </header>
         </div>
@@ -56,9 +56,9 @@
         <div class="row">
           <header class="d-flex py-3">
             <ul class="nav nav-pills">
-              <li class="nav-item"><a href="transfer" class="nav-link">Home</a></li>
+              <li class="nav-item"><a href="/transfer" class="nav-link">Home</a></li>
               <li class="nav-item"><p class="nav-link">/</p></li>
-              <li class="nav-item"><a href="transfer" class="nav-link">Transfer</a></li>
+              <li class="nav-item"><a href="/transfer" class="nav-link">Transfer</a></li>
             </ul>
           </header>
         </div>
@@ -72,7 +72,7 @@
                 <div class="card-body p-md-5">
                   <div class="row">
                     <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
-                      <form th:action="@{profil}" th:object="${user}" th:method="put" class="mx-1 mx-md-4">
+                      <form th:action="@{/profil}" th:object="${user}" th:method="put" class="mx-1 mx-md-4">
                         <div class="d-flex flex-row align-items-center mb-4 form-group">
                           <i class="fas fa-user fa-lg me-3 fa-fw"></i>
                           <div class="form-outline flex-fill mb-0">
@@ -107,7 +107,7 @@
                         </div>
                         <input hidden type="text" th:value="${user.balance}" th:field="*{balance}" />
                       </form>
-                      <form th:action="@{balance}" th:object="${user}" th:method="put" class="mx-1 mx-md-4">
+                      <form th:action="@{/balance}" th:object="${user}" th:method="put" class="mx-1 mx-md-4">
                         <div class="d-flex flex-row align-items-center mb-4 form-group">
                           <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
                           <div class="form-outline flex-fill mb-0">
@@ -121,7 +121,7 @@
                       </form>
                     </div>
                     <div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center flex-wrap order-1 order-lg-2">
-                      <form th:action="@{profil/updatePwd}" th:object="${user}" th:method="put"
+                      <form th:action="@{/profil/updatePwd}" th:object="${user}" th:method="put"
                           oninput='passwordConfirm.setCustomValidity(passwordConfirm.value != password.value ? "Passwords do not match." : "")'
                       >
                         <div class="d-flex flex-row align-items-center mb-4 form-group">

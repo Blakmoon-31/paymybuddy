@@ -38,7 +38,7 @@
       <div class="container">
         <div class="row">
           <header class="col d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
-            <a id="paymybuddy" href="login" class="d-flex bg-success align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+            <a id="paymybuddy" href="/login" class="d-flex bg-success align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
               <span class="fs-4 px-3 text-white">Pay My Buddy</span>
             </a>
 
@@ -70,6 +70,17 @@
                       >
 
                         <div class="d-flex flex-row align-items-center mb-4 form-group">
+                          <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
+                          <div class="form-outline flex-fill mb-0">
+                            <label class="form-label" for="email">Email</label>
+                            <input type="email" th:field="*{email}" id="email" class="form-control" required/>
+                            <div th:if="${#fields.hasErrors('*')}">
+                              <p th:each="err : ${#fields.errors('*')}" th:text="${err}" class="font-weight-bold text-danger"></p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="d-flex flex-row align-items-center mb-4 form-group">
                           <i class="fas fa-user fa-lg me-3 fa-fw"></i>
                           <div class="form-outline flex-fill mb-0">
                             <label class="form-label" for="firstName">First Name</label>
@@ -94,24 +105,12 @@
                         </div>
 
                         <div class="d-flex flex-row align-items-center mb-4 form-group">
-                          <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
-                          <div class="form-outline flex-fill mb-0">
-                            <label class="form-label" for="email">Email</label>
-                            <input type="email" th:field="*{email}" id="email" class="form-control" required/>
-                            <div th:if="${#fields.hasErrors('*')}">
-                              <p th:each="err : ${#fields.errors('*')}" th:text="${err}" class="font-weight-bold text-danger"></p>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div class="d-flex flex-row align-items-center mb-4 form-group">
                           <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
                           <div class="form-outline flex-fill mb-0">
                             <label class="form-label" for="password">Password</label>
                             <input type="password" th:field="*{password}" id="password" class="form-control" required/>
                           </div>
                         </div>
-<!-- comment contrôler vérification ? -->
                         <div class="d-flex flex-row align-items-center mb-4 form-group">
                           <i class="fas fa-key fa-lg me-3 fa-fw"></i>
                           <div class="form-outline flex-fill mb-0">

@@ -1,21 +1,17 @@
 package com.openclassrooms.paymybuddy.controller;
 
 import java.util.Collection;
-import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import com.openclassrooms.paymybuddy.dto.ConnectionDto;
 import com.openclassrooms.paymybuddy.dto.TransactionDto;
-import com.openclassrooms.paymybuddy.dto.UserDto;
 import com.openclassrooms.paymybuddy.dtoservice.MapConnectionDtoService;
 import com.openclassrooms.paymybuddy.dtoservice.MapTransactionDtoService;
 import com.openclassrooms.paymybuddy.dtoservice.MapUserDtoService;
@@ -39,63 +35,53 @@ public class MainWebController {
 
 	@GetMapping("/register")
 	public String showRegisterForm(User user) {
-		return "register";
+		return "/register";
 	}
 
-	@GetMapping({ "/login", "/" })
+	@GetMapping({ "/login" })
 	public String showLoginForm(User user) {
-		return "login";
+		return "/login";
 	}
 
 	@GetMapping({ "/logoff" })
 	public String logOffSession(User user, HttpSession httpSession) {
 		httpSession.removeAttribute("userId");
-		return "redirect:login";
+		return "redirect:/login";
 	}
 
-	@PostMapping("/login")
-	public String loginValidate(User userLogin, BindingResult result, Model model, HttpSession httpSession) {
-		Optional<User> userExists = userService.getUserByEmail(userLogin.getEmail());
+	@GetMapping("/loginValidate")
+	public String loginValidate(Model model, HttpSession httpSession) {
 
-		if (userExists.isEmpty()) {
-			ObjectError error = new ObjectError("globalError", "User not found");
-			result.addError(error);
-			return "login";
-		} else if (!userExists.get().getPassword().equals(userLogin.getPassword())) {
-			ObjectError error = new ObjectError("globalError", "Wrong email or password");
-			result.addError(error);
-			return "login";
-		}
+		String testEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+		User userConnected = userService.getUserByEmail(testEmail).get();
+		httpSession.setAttribute("userId", userConnected.getUserId());
 
-		httpSession.setAttribute("userId", userExists.get().getUserId());
-		model.addAttribute("user", userExists.get());
-
-		model.addAttribute("connectionsList",
-				mapConnectionDtoService.getConnectionsDtoByUserId(userExists.get().getUserId()));
-
-		Optional<UserDto> userDto = mapUserDtoService.getUserDtoById(userExists.get().getUserId());
-		model.addAttribute("transactionsList",
-				mapTransactionDtoService.getTransactionsDtoBySenderId(userDto.get().getUserId()));
-
-		return "redirect:transfer";
+		return "redirect:/transfer";
 	}
 
 	@GetMapping("/transfer")
 	public String showTransferPage(Model model, HttpSession httpSession) {
 
+		String testEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+		User userConnected = userService.getUserByEmail(testEmail).get();
+		httpSession.setAttribute("userId", userConnected.getUserId());
+
 		// Control if there is an active session, if not, back to login
 		if (httpSession.getAttribute("userId") == null) {
-			return "login";
+			model.addAttribute("errorNotConnected", "You must connect first");
+			return "/login";
 		} else {
 			int userId = (int) httpSession.getAttribute("userId");
 			model.addAttribute("transactionsList", mapTransactionDtoService.getTransactionsDtoBySenderId(userId));
+			model.addAttribute("transactionsReceivedList",
+					mapTransactionDtoService.getTransactionsDtoByRecipientId(userId));
 			model.addAttribute("connectionsList", mapConnectionDtoService.getConnectionsDtoByUserId(userId));
 
 			User user = userService.getUserById(userId).get();
 			model.addAttribute("user", user);
 			TransactionDto newTransaction = new TransactionDto();
 			model.addAttribute("transactionDto", newTransaction);
-			return "transfer";
+			return "/transfer";
 		}
 	}
 
@@ -103,17 +89,17 @@ public class MainWebController {
 	public String showProfilPage(Model model, HttpSession httpSession) {
 		// Control if there is an active session, if not, back to login
 		if (httpSession.getAttribute("userId") == null) {
-			return "login";
+			return "/login";
 		} else {
 			int userId = (int) httpSession.getAttribute("userId");
 			model.addAttribute("user", userService.getUserById(userId).get());
 			model.addAttribute("connectionsList", mapConnectionDtoService.getConnectionsDtoByUserId(userId));
 
-			return "profil";
+			return "/profil";
 		}
 	}
 
-	@GetMapping("connection")
+	@GetMapping("/connection")
 	public String showAddConnectionPage(Model model, HttpSession httpSession) {
 		Collection<ConnectionDto> connectionsList = mapConnectionDtoService
 				.getConnectionsDtoByUserId((int) httpSession.getAttribute("userId"));
@@ -122,7 +108,7 @@ public class MainWebController {
 		model.addAttribute("connectionDto", connectionDtoNew);
 		model.addAttribute("connectionsList", connectionsList);
 
-		return "connection";
+		return "/connection";
 	}
 
 }

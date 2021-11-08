@@ -34,21 +34,20 @@
   </head>
 
   <body>
-
     <main>
       <div class="container">
         <div class="row">
           <header class="col d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
-            <a id="paymybuddy" href="transfer" class="d-flex bg-success align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+            <a id="paymybuddy" href="#" class="d-flex bg-success align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
               <span class="fs-4 px-3 text-white">Pay My Buddy</span>
             </a>
 
             <ul class="nav nav-pills">
-              <li class="nav-item"><a href="transfer" class="nav-link">Home</a></li>
+              <li class="nav-item"><a href="#" class="nav-link">Home</a></li>
               <li class="nav-item"><p class="nav-link active" aria-current="page">Transfer</p></li>
-              <li class="nav-item"><a href="profil" class="nav-link">Profil</a></li>
+              <li class="nav-item"><a href="/profil" class="nav-link">Profil</a></li>
               <li class="nav-item"><a href="#" class="nav-link">Contact</a></li>
-              <li class="nav-item"><a href="logoff" class="nav-link">Log off</a></li>
+              <li class="nav-item"><a href="/logoff" class="nav-link">Log off</a></li>
             </ul>
           </header>
         </div>
@@ -57,9 +56,9 @@
         <div class="row">
           <header class="d-flex py-3">
             <ul class="nav nav-pills">
-              <li class="nav-item"><a href="transfer" class="nav-link">Home</a></li>
+              <li class="nav-item"><a href="#" class="nav-link">Home</a></li>
               <li class="nav-item"><p class="nav-link">/</p></li>
-              <li class="nav-item"><a href="transfer" class="nav-link text-secondary">Transfer</a></li>
+              <li class="nav-item"><a href="#" class="nav-link text-secondary">Transfer</a></li>
             </ul>
           </header>
         </div>
@@ -73,7 +72,7 @@
           </div>
         </div>
         <div class="row">
-          <form method="post" th:action="@{transfer}" th:object="${transactionDto}" class="col-10 mx-auto bg-light">
+          <form method="post" th:action="@{/transfer}" th:object="${transactionDto}" class="col-10 mx-auto bg-light">
             <div id="send_money">
               <select id="recipient" name="recipient" th:field="*{recipientUserEmail}" required class="col-4">
                 <option value="" selected>--Select A Connection--</option>
@@ -102,6 +101,11 @@
                 <th>Description</th>
                 <th>Amount</th>
               </tr>
+              <tr th:if="${transactionsList.empty}">
+                <td></td>
+                <td class="font-italic">No transfer sent</td>
+                <td></td>
+              </tr>
               <tr th:each="transaction: ${transactionsList}" th:class="${transactionStat.odd}? 'bg-light'">
                 <td th:text="${transaction.recipientConnectionName}" />
                 <td th:text="${transaction.description}" />
@@ -111,29 +115,33 @@
           </div>
         </div>
       </section>
-      <!-- div class="container">
-        <div class="row">
-            <nav aria-label="Page navigation example d-flex align-items-center">
-              <ul class="pagination">
-                <li class="page-item disabled">
-                  <a class="page-link" href="#" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                    <span class="sr-only">Previous</span>
-                  </a>
-                </li>
-                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                  <a class="page-link" href="#" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                    <span class="sr-only">Next</span>
-                  </a>
-                </li>
-              </ul>
-            </nav>
+      
+      <section>
+        <div class="container">
+          <div class="row">
+            <table class="col-10">
+
+                <caption>Transactions I received</caption>
+
+              <tr>
+                <th>From</th>
+                <th>Description</th>
+                <th>Amount</th>
+              </tr>
+              <tr th:if="${transactionsReceivedList.empty}">
+                <td></td>
+                <td class="font-italic">No transfer received</td>
+                <td></td>
+              </tr>
+              <tr th:each="transactionReceived: ${transactionsReceivedList}" th:class="${transactionReceivedStat.odd}? 'bg-light'">
+                <td th:text="${transactionReceived.recipientConnectionName}" />
+                <td th:text="${transactionReceived.description}" />
+                <td th:inline="text">[[${#numbers.formatDecimal(transactionReceived.amount,1,2)}]] €</td>
+              </tr>
+            </table>
+          </div>
         </div>
-      </div -->
+      </section>
 
     </main>
 

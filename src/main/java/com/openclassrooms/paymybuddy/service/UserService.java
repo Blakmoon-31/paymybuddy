@@ -1,22 +1,30 @@
 package com.openclassrooms.paymybuddy.service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.openclassrooms.paymybuddy.dto.UserDto;
 import com.openclassrooms.paymybuddy.dtoservice.MapUserDtoService;
+import com.openclassrooms.paymybuddy.model.Role;
 import com.openclassrooms.paymybuddy.model.Transaction;
 import com.openclassrooms.paymybuddy.model.User;
 import com.openclassrooms.paymybuddy.repository.UserRepository;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
 	@Autowired
 	private UserRepository userRepository;
@@ -29,6 +37,9 @@ public class UserService {
 
 	@Autowired
 	private ConnectionService connectionService;
+
+	@Autowired
+	private RoleService roleService;
 
 	public Collection<User> getUsers() {
 		return userRepository.findAll();
@@ -52,6 +63,8 @@ public class UserService {
 		} else {
 			Optional<User> existsEmail = userRepository.findByEmail(user.getEmail());
 			if (existsEmail.isEmpty()) {
+				Role role = roleService.getRoleByRoleId(1).get();
+				user.setUserRole(role);
 				return userRepository.save(user);
 			} else {
 				return null;
@@ -94,6 +107,22 @@ public class UserService {
 
 	public Double getBalanceByUserId(int userId) {
 		return userRepository.findBalanceByUserId(userId);
+	}
+
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		Objects.requireNonNull(username);
+		User user = userRepository.findByEmail(username)
+				.orElseThrow(() -> new UsernameNotFoundException("User not found"));
+		return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
+				getGrantedAuthorities(user));
+	}
+
+	private List<GrantedAuthority> getGrantedAuthorities(User user) {
+		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+		Role role = user.getUserRole();
+		authorities.add(new SimpleGrantedAuthority(role.getRoleName()));
+		return authorities;
 	}
 
 }

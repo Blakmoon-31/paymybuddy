@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -21,6 +22,9 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	public Collection<User> getUsers() {
 		return userService.getUsers();
@@ -43,6 +47,7 @@ public class UserController {
 	@PostMapping("/adduser")
 	public String saveUser(User userToSave, BindingResult result, Model model) {
 
+		userToSave.setPassword(passwordEncoder.encode(userToSave.getPassword()));
 		User userSaved = userService.saveUser(userToSave);
 
 		if (userSaved == null) {
@@ -51,7 +56,7 @@ public class UserController {
 			result.addError(error);
 			return "register";
 		}
-		return "redirect:login";
+		return "redirect:/login";
 	}
 
 	@PutMapping("/profil")
@@ -59,19 +64,20 @@ public class UserController {
 		userToUpdate.setUserId((int) httpSession.getAttribute("userId"));
 		User existsUser = userService.getUserById(userToUpdate.getUserId()).get();
 		userToUpdate.setPassword(existsUser.getPassword());
+		userToUpdate.setUserRole(existsUser.getUserRole());
 		userService.saveUser(userToUpdate);
-		return "redirect:profil";
+		return "redirect:/profil";
 	}
 
-	@PutMapping("profil/updatePwd")
+	@PutMapping("/profil/updatePwd")
 	public String updatePassword(User userToUpdate, BindingResult result, Model model, HttpSession httpSession) {
 		User userNew = userService.getUserById((int) httpSession.getAttribute("userId")).get();
-		userNew.setPassword(userToUpdate.getPassword());
+		userNew.setPassword(passwordEncoder.encode(userToUpdate.getPassword()));
 		userService.saveUser(userNew);
 		return "redirect:/profil";
 	}
 
-	@PutMapping("balance")
+	@PutMapping("/balance")
 	public String updateBalance(User userToUpdate, BindingResult result, Model model, HttpSession httpSession) {
 		User userNew = userService.getUserById((int) httpSession.getAttribute("userId")).get();
 		userNew.setBalance(userToUpdate.getBalance());

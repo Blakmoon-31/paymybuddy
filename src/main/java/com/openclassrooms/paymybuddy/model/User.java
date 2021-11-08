@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -29,7 +31,11 @@ public class User {
 	@Column(name = "user_email", length = 255, nullable = false, unique = true)
 	private String email;
 
-	@Column(name = "user_password", length = 20, nullable = false)
+	@ManyToOne
+	@JoinColumn(name = "role_id", nullable = false)
+	private Role userRole;
+
+	@Column(name = "user_password", length = 60, nullable = false)
 	private String password;
 
 	@Column(name = "user_first_name", length = 20, nullable = false)
@@ -44,11 +50,11 @@ public class User {
 	@Column(name = "user_balance", nullable = false, precision = 9, scale = 2)
 	private Double balance = 0.00;
 
-//	@ManyToMany(fetch = FetchType.LAZY)
-//	@JoinTable(name = "connection", joinColumns = @JoinColumn(name = "con_user_user_id"), inverseJoinColumns = @JoinColumn(name = "con_connection_user_id"))
-//	private List<User> connections;
-
 	@OneToMany(mappedBy = "userConnection")
 	private List<Connection> connections = new ArrayList<>();
+
+	public String getUsername() {
+		return email;
+	}
 
 }

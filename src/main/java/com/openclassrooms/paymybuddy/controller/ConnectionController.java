@@ -44,7 +44,7 @@ public class ConnectionController {
 		return connectionService.searchByEmail(email);
 	}
 
-	@PostMapping("connection")
+	@PostMapping("/connection")
 	public String saveConnection(ConnectionDto connectionDto, Model model, HttpSession httpSession) {
 		Connection connectionToSave = new Connection();
 
@@ -59,7 +59,7 @@ public class ConnectionController {
 			connectionToSave.setNameConnectionUser(connectionDto.getConnectionName());
 
 			connectionService.saveConnection(connectionToSave);
-			return "redirect:connection";
+			return "redirect:/connection";
 
 		} else {
 			Collection<ConnectionDto> connectionsList = mapConnectionDtoService
@@ -69,13 +69,13 @@ public class ConnectionController {
 			model.addAttribute("connectionDto", connectionDtoNew);
 			model.addAttribute("connectionsList", connectionsList);
 			model.addAttribute("errorEmail", "Email " + connectionDto.getConnectedUserEmail() + " not found !");
-			return "connection";
+			return "/connection";
 
 		}
 
 	}
 
-	@DeleteMapping("deleteConnection/{id}")
+	@DeleteMapping("/deleteConnection/{id}")
 	public String deleteConnectionByUserIdAndConnectedUserId(HttpSession httpSession,
 			@PathVariable("id") int userConnectedId) {
 		connectionService.deleteConnectionByUserIdAndConnectedUserId((int) httpSession.getAttribute("userId"),

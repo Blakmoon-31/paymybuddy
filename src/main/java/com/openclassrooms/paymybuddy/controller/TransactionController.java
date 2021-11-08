@@ -46,7 +46,7 @@ public class TransactionController {
 		return transactionService.getTransactionsForASenderUserDtoAndBilled(senderUserDto, billed);
 	}
 
-	@PostMapping("transfer")
+	@PostMapping("/transfer")
 	public String saveTransaction(TransactionDto transactionDto, BindingResult result, Model model,
 			HttpSession httpSession) {
 		int userId = (int) httpSession.getAttribute("userId");
@@ -67,7 +67,7 @@ public class TransactionController {
 		TransactionDto newTransaction = new TransactionDto();
 		model.addAttribute("transactionDto", newTransaction);
 
-		return "transfer";
+		return "/transfer";
 
 	}
 }

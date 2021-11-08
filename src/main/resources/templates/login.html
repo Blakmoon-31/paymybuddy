@@ -44,10 +44,9 @@
       <div class="row">
         <main class="form-signin">
           
-          <form th:action="@{login}" th:object="${user}" method="post">
-            
+          <form th:action="@{/login}" th:object="${user}" method="post">
             <div class="form-floating">
-              <input type="email" class="form-control rounded" name="email" id="floatingInput" placeholder="Email@mail.com">
+              <input type="email" class="form-control rounded" name="username" id="floatingInput" placeholder="Email@mail.com">
               <label for="floatingInput">Email address</label>
             </div>
             <p></p>
@@ -55,8 +54,8 @@
               <input type="password" class="form-control rounded" name="password" id="floatingPassword" placeholder="Password">
               <label for="floatingPassword">Password</label>
             </div>
-            <div th:if="${#fields.hasErrors('*')}">
-              <p th:each="err : ${#fields.errors('*')}" th:text="${err}" class="font-weight-bold text-danger"></p>
+            <div th:if="${param.error}">
+              <p style="font-size: 20; color: #FF1C19;">Email or password is invalid</p>
             </div>
             <div class="checkbox mb-3">
               <label>
@@ -65,7 +64,7 @@
             </div>
             <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
             <p></p>
-            <a class="w-100 btn btn-success" href="register"><span class="font-weight-bold">Create an account</span></a>
+            <a class="w-100 btn btn-success" href="/register"><span class="font-weight-bold">Create an account</span></a>
           </form>
         </main>
       </div>

@@ -10,4 +10,6 @@ public interface MapTransactionDtoRepository extends JpaRepository<TransactionDt
 
 	List<TransactionDto> findBySenderUserId(int senderId);
 
+	List<TransactionDto> findByRecipientUserId(int recipientId);
+
 }
