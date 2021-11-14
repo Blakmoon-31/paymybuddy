@@ -30,7 +30,7 @@
     <!-- Custom styles for this template -->
     <link href="../static/css/headers.css" th:href="@{./css/headers.css}" rel="stylesheet">
 
-    <title>Pay My Buddy - Transfer</title>
+    <title>Pay My Buddy - Transfer billing</title>
   </head>
 
   <body>
@@ -56,11 +56,11 @@
         <div class="row">
           <header class="d-flex py-3">
             <ul class="nav nav-pills">
-              <li class="nav-item"><a href="#" class="nav-link">Home</a></li>
+              <li class="nav-item"><a href="/transfer" class="nav-link">Home</a></li>
               <li class="nav-item"><p class="nav-link">/</p></li>
-              <li class="nav-item"><a href="#" class="nav-link text-secondary">Transfer</a></li>
-              <li th:if="${session.userRole == 'admin'}" class="nav-item"><p class="nav-link">/</p></li>
-              <li th:if="${session.userRole == 'admin'}" class="nav-item"><a href="/billing" class="nav-link">Billing</a></li>
+              <li class="nav-item"><a href="/transfer" class="nav-link">Transfer</a></li>
+              <li class="nav-item"><p class="nav-link">/</p></li>
+              <li class="nav-item"><a href="#" class="nav-link text-secondary">Billing</a></li>
             </ul>
           </header>
         </div>
@@ -69,25 +69,8 @@
       <div class="container">
         <div class="row">
           <div class="col-10 mx-auto d-flex justify-content-between align-items-end">
-            <caption th:inline="text">Send Money - Current balance avalable : [[${#numbers.formatDecimal(user.balance,1,2)}]] €</caption>
-            <a class=" btn btn-primary" href="connection"><span class="font-weight-bold">Add Connection</span></a>
+            <caption th:inline="text"></caption>
           </div>
-        </div>
-        <div class="row">
-          <form method="post" th:action="@{/transfer}" th:object="${transactionDto}" class="col-10 mx-auto bg-light">
-            <div id="send_money">
-              <select id="recipient" name="recipient" th:field="*{recipientUserEmail}" required class="col-4">
-                <option value="" selected>--Select A Connection--</option>
-                <option th:each="i : ${connectionsList}" th:value="${i.connectedUserEmail}" th:text="${i.connectionName}"></option>
-              </select>
-              <input id="description" type="text" name="description" th:field="*{description}" placeholder="Description" required maxlength="100" class="col-4">
-              <input id="amount" type="number" name="amount" th:field="*{amount}" required placeholder="0€" step="0.01" class="col-2">
-              <input id="pay" type="submit" value="Pay" class="bg-success text-white font-weight-bold col-3">
-            </div>
-            <div th:if="${errorTransfer != null}">
-              <p th:text="${errorTransfer}" class="font-weight-bold text-danger"></p>
-            </div>
-          </form>
         </div>
       </div>
 
@@ -96,22 +79,24 @@
           <div class="row">
             <table class="col-10">
 
-                <caption>My Transactions</caption>
+                <caption>Transactions to bill</caption>
 
               <tr>
-                <th>Connections</th>
-                <th>Description</th>
+                <th>Date</th>
+                <th>User</th>
                 <th>Amount</th>
+                <th>Fee</th>
               </tr>
-              <tr th:if="${transactionsList.empty}">
+              <tr th:if="${transactionsToBillList.empty}">
                 <td></td>
-                <td class="font-italic">No transfer sent</td>
+                <td class="font-italic">No transfer to bill</td>
                 <td></td>
               </tr>
-              <tr th:each="transaction: ${transactionsList}" th:class="${transactionStat.odd}? 'bg-light'">
-                <td th:text="${transaction.recipientConnectionName}" />
-                <td th:text="${transaction.description}" />
+              <tr th:each="transaction: ${transactionsToBillList}" th:class="${transactionStat.odd}? 'bg-light'">
+                <td th:text="${#temporals.format(transaction.date, 'dd/MM/yyyy')}" />
+                <td th:text="${transaction.userEmail}" />
                 <td th:inline="text">[[${#numbers.formatDecimal(transaction.amount,1,2)}]] €</td>
+                <td th:inline="text">[[${#numbers.formatDecimal(transaction.feeRate,1,2)}]] %</td>
               </tr>
             </table>
           </div>
@@ -123,22 +108,17 @@
           <div class="row">
             <table class="col-10">
 
-                <caption>Transactions received</caption>
+                <caption>Fee list</caption>
 
               <tr>
-                <th>From</th>
-                <th>Description</th>
-                <th>Amount</th>
+                <th>Rate</th>
+                <th>Start Date</th>
+                <th>End Date</th>
               </tr>
-              <tr th:if="${transactionsReceivedList.empty}">
-                <td></td>
-                <td class="font-italic">No transfer received</td>
-                <td></td>
-              </tr>
-              <tr th:each="transactionReceived: ${transactionsReceivedList}" th:class="${transactionReceivedStat.odd}? 'bg-light'">
-                <td th:text="${transactionReceived.recipientConnectionName}" />
-                <td th:text="${transactionReceived.description}" />
-                <td th:inline="text">[[${#numbers.formatDecimal(transactionReceived.amount,1,2)}]] €</td>
+              <tr th:each="fee: ${feeList}" th:class="${feeStat.odd}? 'bg-light'">
+                <td th:inline="text">[[${#numbers.formatDecimal(fee.ratePercentage,1,2)}]] %</td>
+                <td th:text="${#temporals.format(fee.startDate, 'dd/MM/yyyy')}" />
+                <td th:text="${#temporals.format(fee.endDate, 'dd/MM/yyyy')}" />
               </tr>
             </table>
           </div>

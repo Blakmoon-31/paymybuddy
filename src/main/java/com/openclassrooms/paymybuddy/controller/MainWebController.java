@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import com.openclassrooms.paymybuddy.dto.model.ConnectionDto;
 import com.openclassrooms.paymybuddy.dto.model.TransactionDto;
 import com.openclassrooms.paymybuddy.dto.service.MapConnectionDtoService;
+import com.openclassrooms.paymybuddy.dto.service.MapTransactionBillingDtoService;
 import com.openclassrooms.paymybuddy.dto.service.MapTransactionDtoService;
-import com.openclassrooms.paymybuddy.dto.service.MapUserDtoService;
+import com.openclassrooms.paymybuddy.model.Role;
 import com.openclassrooms.paymybuddy.model.User;
+import com.openclassrooms.paymybuddy.service.FeeService;
 import com.openclassrooms.paymybuddy.service.UserService;
 
 @Controller
@@ -25,13 +27,16 @@ public class MainWebController {
 	private UserService userService;
 
 	@Autowired
-	private MapUserDtoService mapUserDtoService;
-
-	@Autowired
 	private MapTransactionDtoService mapTransactionDtoService;
 
 	@Autowired
 	private MapConnectionDtoService mapConnectionDtoService;
+
+	@Autowired
+	private MapTransactionBillingDtoService mapTransactionBillingDtoService;
+
+	@Autowired
+	private FeeService feeService;
 
 	@GetMapping("/register")
 	public String showRegisterForm(User user) {
@@ -54,7 +59,10 @@ public class MainWebController {
 
 		String testEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 		User userConnected = userService.getUserByEmail(testEmail).get();
+		Role userRole = userConnected.getUserRole();
+
 		httpSession.setAttribute("userId", userConnected.getUserId());
+		httpSession.setAttribute("userRole", userRole.getRoleName());
 
 		return "redirect:/transfer";
 	}
@@ -78,6 +86,25 @@ public class MainWebController {
 			TransactionDto newTransaction = new TransactionDto();
 			model.addAttribute("transactionDto", newTransaction);
 			return "/transfer";
+		}
+	}
+
+	@GetMapping("/billing")
+	public String showBillingPage(Model model, HttpSession httpSession) {
+
+		// Controls if there is an active session, if not, back to login
+		if (httpSession.getAttribute("userId") == null) {
+			model.addAttribute("errorNotConnected", "You must connect first");
+			return "/login";
+		} else {
+			int userId = (int) httpSession.getAttribute("userId");
+			model.addAttribute("transactionsToBillList", mapTransactionBillingDtoService.getTransactionsNotBilled());
+			model.addAttribute("feeList", feeService.getFees());
+
+			User user = userService.getUserById(userId).get();
+			model.addAttribute("user", user);
+
+			return "/billing";
 		}
 	}
 
