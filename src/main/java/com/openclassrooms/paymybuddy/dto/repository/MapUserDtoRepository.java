@@ -1,10 +1,10 @@
-package com.openclassrooms.paymybuddy.dtorepository;
+package com.openclassrooms.paymybuddy.dto.repository;
 
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.openclassrooms.paymybuddy.dto.UserDto;
+import com.openclassrooms.paymybuddy.dto.model.UserDto;
 
 public interface MapUserDtoRepository extends JpaRepository<UserDto, Integer> {
 

@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import com.openclassrooms.paymybuddy.dto.ConnectionDto;
-import com.openclassrooms.paymybuddy.dto.UserDto;
-import com.openclassrooms.paymybuddy.dtoservice.MapConnectionDtoService;
-import com.openclassrooms.paymybuddy.dtoservice.MapUserDtoService;
+import com.openclassrooms.paymybuddy.dto.model.ConnectionDto;
+import com.openclassrooms.paymybuddy.dto.model.UserDto;
+import com.openclassrooms.paymybuddy.dto.service.MapConnectionDtoService;
+import com.openclassrooms.paymybuddy.dto.service.MapUserDtoService;
 import com.openclassrooms.paymybuddy.model.Connection;
 import com.openclassrooms.paymybuddy.model.User;
 import com.openclassrooms.paymybuddy.service.ConnectionService;

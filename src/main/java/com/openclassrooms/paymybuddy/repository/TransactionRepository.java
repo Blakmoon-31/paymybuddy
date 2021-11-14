@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.openclassrooms.paymybuddy.dto.UserDto;
+import com.openclassrooms.paymybuddy.dto.model.UserDto;
 import com.openclassrooms.paymybuddy.model.Fee;
 import com.openclassrooms.paymybuddy.model.Transaction;
 

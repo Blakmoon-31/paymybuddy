@@ -10,11 +10,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import com.openclassrooms.paymybuddy.dto.ConnectionDto;
-import com.openclassrooms.paymybuddy.dto.TransactionDto;
-import com.openclassrooms.paymybuddy.dtoservice.MapConnectionDtoService;
-import com.openclassrooms.paymybuddy.dtoservice.MapTransactionDtoService;
-import com.openclassrooms.paymybuddy.dtoservice.MapUserDtoService;
+import com.openclassrooms.paymybuddy.dto.model.ConnectionDto;
+import com.openclassrooms.paymybuddy.dto.model.TransactionDto;
+import com.openclassrooms.paymybuddy.dto.service.MapConnectionDtoService;
+import com.openclassrooms.paymybuddy.dto.service.MapTransactionDtoService;
+import com.openclassrooms.paymybuddy.dto.service.MapUserDtoService;
 import com.openclassrooms.paymybuddy.model.User;
 import com.openclassrooms.paymybuddy.service.UserService;
 
@@ -38,7 +38,7 @@ public class MainWebController {
 		return "/register";
 	}
 
-	@GetMapping({ "/login" })
+	@GetMapping("/login")
 	public String showLoginForm(User user) {
 		return "/login";
 	}
@@ -62,11 +62,7 @@ public class MainWebController {
 	@GetMapping("/transfer")
 	public String showTransferPage(Model model, HttpSession httpSession) {
 
-		String testEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-		User userConnected = userService.getUserByEmail(testEmail).get();
-		httpSession.setAttribute("userId", userConnected.getUserId());
-
-		// Control if there is an active session, if not, back to login
+		// Controls if there is an active session, if not, back to login
 		if (httpSession.getAttribute("userId") == null) {
 			model.addAttribute("errorNotConnected", "You must connect first");
 			return "/login";
@@ -87,7 +83,7 @@ public class MainWebController {
 
 	@GetMapping("/profil")
 	public String showProfilPage(Model model, HttpSession httpSession) {
-		// Control if there is an active session, if not, back to login
+		// Controls if there is an active session, if not, back to login
 		if (httpSession.getAttribute("userId") == null) {
 			return "/login";
 		} else {

@@ -16,8 +16,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.openclassrooms.paymybuddy.dto.UserDto;
-import com.openclassrooms.paymybuddy.dtoservice.MapUserDtoService;
+import com.openclassrooms.paymybuddy.dto.model.UserDto;
+import com.openclassrooms.paymybuddy.dto.service.MapUserDtoService;
 import com.openclassrooms.paymybuddy.model.Role;
 import com.openclassrooms.paymybuddy.model.Transaction;
 import com.openclassrooms.paymybuddy.model.User;

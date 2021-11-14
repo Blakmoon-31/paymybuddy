@@ -8,8 +8,8 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.openclassrooms.paymybuddy.dto.UserDto;
-import com.openclassrooms.paymybuddy.dtoservice.MapUserDtoService;
+import com.openclassrooms.paymybuddy.dto.model.UserDto;
+import com.openclassrooms.paymybuddy.dto.service.MapUserDtoService;
 import com.openclassrooms.paymybuddy.model.Connection;
 import com.openclassrooms.paymybuddy.model.ConnectionId;
 import com.openclassrooms.paymybuddy.model.User;

@@ -1,4 +1,4 @@
-package com.openclassrooms.paymybuddy.dto;
+package com.openclassrooms.paymybuddy.dto.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

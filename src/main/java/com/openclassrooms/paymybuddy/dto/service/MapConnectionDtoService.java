@@ -1,4 +1,4 @@
-package com.openclassrooms.paymybuddy.dtoservice;
+package com.openclassrooms.paymybuddy.dto.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7,7 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.openclassrooms.paymybuddy.dto.ConnectionDto;
+import com.openclassrooms.paymybuddy.dto.model.ConnectionDto;
 import com.openclassrooms.paymybuddy.model.Connection;
 import com.openclassrooms.paymybuddy.service.ConnectionService;
 

@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
@@ -30,6 +31,9 @@ public class UserControllerTest {
 
 	@Mock
 	private UserService userService;
+
+	@Mock
+	private PasswordEncoder passwordEncoder;
 
 	@BeforeEach
 	private void setUpPerTest() {

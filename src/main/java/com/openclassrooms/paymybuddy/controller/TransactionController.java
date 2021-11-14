@@ -10,10 +10,10 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import com.openclassrooms.paymybuddy.dto.TransactionDto;
-import com.openclassrooms.paymybuddy.dto.UserDto;
-import com.openclassrooms.paymybuddy.dtoservice.MapConnectionDtoService;
-import com.openclassrooms.paymybuddy.dtoservice.MapTransactionDtoService;
+import com.openclassrooms.paymybuddy.dto.model.TransactionDto;
+import com.openclassrooms.paymybuddy.dto.model.UserDto;
+import com.openclassrooms.paymybuddy.dto.service.MapConnectionDtoService;
+import com.openclassrooms.paymybuddy.dto.service.MapTransactionDtoService;
 import com.openclassrooms.paymybuddy.model.Transaction;
 import com.openclassrooms.paymybuddy.model.User;
 import com.openclassrooms.paymybuddy.service.TransactionService;

@@ -16,7 +16,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
+import com.openclassrooms.paymybuddy.controller.RoleController;
 import com.openclassrooms.paymybuddy.controller.UserController;
+import com.openclassrooms.paymybuddy.model.Role;
 import com.openclassrooms.paymybuddy.model.User;
 import com.openclassrooms.paymybuddy.service.UserService;
 
@@ -29,6 +31,9 @@ public class UserControllerTI {
 
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private RoleController roleController;
 
 	@BeforeAll
 	public void initUserData() {
@@ -65,7 +70,12 @@ public class UserControllerTI {
 
 		String response = userController.saveUser(userToSave, result, model);
 
-		assertThat(response).isEqualTo("redirect:login");
+		assertThat(response).isEqualTo("redirect:/login");
+
+		User userSaved = userController.getUserByEmail(userToSave.getEmail()).get();
+		Role roleUser = roleController.getRoleByRoleId(1).get();
+
+		assertThat(userSaved.getUserRole()).isEqualTo(roleUser);
 
 	}
 
