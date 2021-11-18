@@ -60,6 +60,8 @@ public class TransactionController {
 		}
 
 		model.addAttribute("transactionsList", mapTransactionDtoService.getTransactionsDtoBySenderId(userId));
+		model.addAttribute("transactionsReceivedList",
+				mapTransactionDtoService.getTransactionsDtoByRecipientId(userId));
 		model.addAttribute("connectionsList", mapConnectionDtoService.getConnectionsDtoByUserId(userId));
 
 		User user = userService.getUserById(userId).get();
