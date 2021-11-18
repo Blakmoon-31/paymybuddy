@@ -30,6 +30,9 @@ ENGINE = InnoDB;
 
 CREATE UNIQUE INDEX `role_name_UNIQUE` ON `pay_my_buddy`.`role` (`role_name` ASC) VISIBLE;
 
+INSERT INTO role (role_id,role_name) VALUES(1,'user');
+INSERT INTO role (role_id,role_name) VALUES(2,'admin');
+commit;
 
 -- -----------------------------------------------------
 -- Table `pay_my_buddy`.`user`

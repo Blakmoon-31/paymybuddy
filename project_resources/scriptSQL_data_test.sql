@@ -1,10 +1,3 @@
-/* Imports données tests table ROLE */
-use pay_my_buddy;
-
-INSERT INTO role (role_id,role_name) VALUES(1,'user');
-INSERT INTO role (role_id,role_name) VALUES(2,'admin');
-commit;
-
 /* Imports données tests table USER */
 use pay_my_buddy;
 
